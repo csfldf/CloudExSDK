@@ -8,6 +8,7 @@ from NormalUtil import popNoneInList
 from PredictUtil.PeriodicPredictUtil import PeriodicPredictUtil
 from PredictUtil.MAPredictUtil import MAPredictUtil
 from PredictUtil.DailyPredictUtil import DailyPredictUtil
+from PredictUtil.ACRCPredictUtil import ACRCPredictUtil
 
 clearAllData()
 
@@ -23,13 +24,13 @@ f.close()
 ppu = PeriodicPredictUtil()
 mau = MAPredictUtil()
 dpu = DailyPredictUtil()
-
+acrcu = ACRCPredictUtil()
 
 for wl in realWL:
     #periodic
     #addWLToPeriodicWindow(wl)
-    #predictWL = ppu.getNextPeriodWorkload()
-    #addPWLToPeriodicWindow(predictWL)
+    #periodicPredictWL = ppu.getNextPeriodWorkload()
+    #addPWLToPeriodicWindow(periodicPredictWL)
 
     #ma
 #    addWLToMAWindow(wl)
@@ -37,11 +38,16 @@ for wl in realWL:
 #    addPWLToMAWindow(predictWL)
 
     #daily
-    addWLToDailyWindow(wl)
-    predictWL = dpu.getNextPeriodWorkload()
-    addPWLToDailyWindow(predictWL)
+    #addWLToDailyWindow(wl)
+    #dailyPredictWL = dpu.getNextPeriodWorkload()
+    #addPWLToDailyWindow(dailyPredictWL)
 
-    addPWLToStatWindow(predictWL)
+    addWLToACRCWindow(wl)
+    acrcPredictWL = acrcu.getNextPeriodWorkload()
+    addPWLToACRCWindow(acrcPredictWL)
+
+    #addPWLToStatWindow(max(dailyPredictWL, periodicPredictWL))
+    addPWLToStatWindow(acrcPredictWL)
 
 pdDB = shelve.open(predictDataFile)
 statPD = pdDB[statPredictData]
@@ -56,8 +62,14 @@ compareTuple.pop(0)
 #f = open('./DataFile/maCompare', 'w')
 
 #daily
-f = open('./DataFile/dailyCOmpare', 'w')
+#f = open('./DataFile/dailyCOmpare', 'w')
 
+#combine
+#f = open('./DataFile/combineCompare', 'w')
+
+
+#acrc
+f = open('./DataFile/acrcCompare', 'w')
 
 for hd, pd in compareTuple:
     f.write('%d\t%d\n' % (hd, pd))

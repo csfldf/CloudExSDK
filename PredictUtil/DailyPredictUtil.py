@@ -8,7 +8,7 @@ from math import floor
 
 class DailyPredictUtil(BasePredictUtil):
 
-    def __init__(self, windowSize=dailyHistoryWindowSize, historyData=None, historyDataFile=historyDataFile, historyDataName=dailyHistoryData, highPercent=0.8):
+    def __init__(self, windowSize=dailyHistoryWindowSize, historyData=None, historyDataFile=historyDataFile, historyDataName=dailyHistoryData, highPercent=0.85):
         if not historyData and historyDataFile:
             hdDB = shelve.open(historyDataFile)
             historyData = hdDB[dailyHistoryData]

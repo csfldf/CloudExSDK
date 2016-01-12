@@ -7,18 +7,22 @@ historyDataFile = '/home/sk/image/cloudExData/workloadData.db'
 dailyHistoryData = 'DAILYHISTORYDATA'
 periodicHistoryData = 'PERIODICHISTORYDATA'
 maHistoryData = 'MAHISTORYDATA'
+acrcHistoryData = 'ACRCHISTORYDATA'
 dailyHistoryWindowSize = 7
 periodicHistoryWindowSize = 4
 maHistoryWindowSize = periodicHistoryWindowSize
+acrcHistoryWindowSize = periodicHistoryWindowSize
 
 predictDataFile = '/home/sk/image/cloudExData/predictWorkload.db'
 dailyPredictData = 'DAILYPREDICTDATA'
 periodicPredictData = 'PERIODICPREDICTDATA'
 maPredictData = 'MAPREDICTDATA'
+acrcPredictData = 'ACTCPREDICTDATA'
 statPredictData = 'STATPREDICTDATA'
 dailyPredictWindowSize = 7
 periodicPredictWindowSize = periodicHistoryWindowSize
 maPredictWindowSize = maHistoryWindowSize
+acrcPredictWindowSize = acrcHistoryWindowSize
 firstPeriodPredictData = -1
 
 errorParamDataFile = '/home/sk/image/cloudExData/errorParam.db'
@@ -83,6 +87,22 @@ def addWLToMAWindow(workloadData):
     hdDB[maHistoryData] = maHD
     hdDB.close()
 
+def addWLToACRCWindow(workloadData):
+
+    addWLToDailyWindow(workloadData)
+    addWLToPeriodicWindow(workloadData)
+
+    hdDB = shelve.open(historyDataFile)
+    acrcHD = hdDB.get(acrcHistoryData, None)
+
+    if not acrcHD:
+        acrcHD = [workloadData]
+    else:
+        addDataToWindow(acrcHD, workloadData, acrcHistoryWindowSize)
+
+    hdDB[acrcHistoryData] = acrcHD
+    hdDB.close()
+
 def getDailyHD():
     hdDB = shelve.open(historyDataFile)
     dailyHD = hdDB.get(dailyHistoryData, None)
@@ -99,6 +119,7 @@ def clearHistoryData():
     hdDB = shelve.open(historyDataFile)
     hdDB[dailyHistoryData] = []
     hdDB[periodicHistoryData] = []
+    hdDB[acrcHistoryData] = []
     hdDB.close()
 
 def addPWLToDailyWindow(predictWorkloadData):
@@ -144,6 +165,21 @@ def addPWLToMAWindow(predictWorkloadData):
     pdDB[maPredictData] = maPD
     pdDB.close()
 
+
+def addPWLToACRCWindow(predictWorkloadData):
+    if not predictWorkloadData:
+        raise Exception('no predictWorkloadData pass in function addPredictWorkload!')
+    pdDB = shelve.open(predictDataFile)
+    acrcPD = pdDB.get(acrcPredictData, None)
+
+    if not acrcPD:
+        acrcPD = [firstPeriodPredictData, predictWorkloadData]
+    else:
+        addDataToWindow(acrcPD, predictWorkloadData, acrcPredictWindowSize)
+
+    pdDB[acrcPredictData] = acrcPD
+    pdDB.close()
+
 def addPWLToStatWindow(predictWorkloadData):
     if not predictWorkloadData:
         raise Exception('no predictWorkloadData pass in function addPredictWorkload!')
@@ -181,6 +217,7 @@ def clearPredictData():
     pdDB[dailyPredictData] = []
     pdDB[periodicPredictData] = []
     pdDB[statPredictData] = []
+    pdDB[acrcPredictData] = []
     pdDB.close()
 
 def clearErrorData():

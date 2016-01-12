@@ -17,5 +17,5 @@ class BasePredictUtil(object):
             hdDB.close()
             self.historyData = targetData
 
-    def getNextPeriodWorkload():
+    def getNextPeriodWorkload(self):
         pass
