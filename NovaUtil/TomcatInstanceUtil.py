@@ -30,19 +30,39 @@ class TomcatInstanceUtil(object):
         return str(uuidObj)
 
     @staticmethod
-    def createTomcatInstance():
+    def createTomcatInstance(azName = ''):
         nova = GetClientUtil.getNovaClient()
         targetInstanceName = instanceNamePrefix + TomcatInstanceUtil.getUUIDStr()
         targetImage = ImageUtil.findImageByName(imageName)
         targetFlavor = FlavorUtil.findFlavorByName(flavorName)
-        targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor)
+        if azName:
+            targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, availability_zone=azName)
+        else:
+            targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor)
+
         #print targetInstance.name
         ips = nova.servers.ips(targetInstance.id)
         while not ips:
             ips = nova.servers.ips(targetInstance.id)
         #print ips
         innerIP = TomcatInstanceUtil.getInnerIPFromIPInfo(ips)
-        UsingInstancesDBUtil.addUsingInstance(targetInstance.id, targetInstance.name, 1, innerIP)
+
+        count = 0
+        while True:
+            try:
+                targetInstance = nova.servers.get(targetInstance.id)
+                realAZName = targetInstance.__dict__['OS-EXT-AZ:availability_zone']
+            except KeyError:
+                count += 1
+                if count >= 50:
+                    raise Exception('get az info failure!')
+                else:
+                    continue
+            else:
+                break
+
+        UsingInstancesDBUtil.addUsingInstance(targetInstance.id, targetInstance.name, 1, innerIP, azName=realAZName)
+
         return targetInstance
 
     @staticmethod
@@ -67,6 +87,36 @@ class TomcatInstanceUtil(object):
 
             if count == no:
                 break
+
+    @staticmethod
+    def deleteSpecifyNumberInstancesWithSpecifyAZ(no, azName):
+        holdVms = UsingInstancesDBUtil.getUsingInstancesByAZName(azName)
+        holdVmsLen = len(holdVms)
+        if no > holdVmsLen:
+            raise Exception('Could not down ' + no + ' vms in ' + azName + ', it only has ' + holdVmsLen + ' vms!')
+
+        nova = GetClientUtil.getNovaClient()
+
+        count = 0
+        for vm in holdVms:
+            targetInstance = nova.servers.get(vm['id'])
+            targetInstance.delete()
+            UsingInstancesDBUtil.deleteUsingInstanceByResourceId(targetInstance.id)
+            count += 1
+
+            if count == no:
+                break
+
+
+
+
+
+    @staticmethod
+    def createSpecifyNumberInstancesInAZ(no, azName=''):
+        count = no
+        while count > 0:
+            TomcatInstanceUtil.createTomcatInstance(azName)
+            count -= 1
 
     @staticmethod
     def resetAllUsingInstances():

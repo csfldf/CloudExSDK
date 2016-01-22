@@ -1,0 +1,10 @@
+{
+    'RegionOne':[
+                    {'azName':'az1', 'distance':0},
+                    {'azName':'az2', 'distance':2}
+                ],
+    'RegionTwo':[
+                    {'azName':'az3', 'distance':4},
+                    {'azName':'az4', 'distance':4}
+                ]
+}

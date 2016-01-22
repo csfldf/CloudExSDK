@@ -7,6 +7,7 @@ from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from NovaUtil.InstanceUtil import InstanceUtil
 from CeilometerUtil.SampleUtil import SampleUtil
 from PredictUtil import *
+from ACRCUtil import topoFilePath
 
 #dropCloudExDB()
 #createCloudExDB()
@@ -48,4 +49,11 @@ from PredictUtil import *
 #print len(dhd)
 #print len(phd)
 
-clearAllData()
+#clearAllData()
+
+#instance = InstanceUtil.findInstaceByName('sjywin')
+#print instance.__dict__['OS-EXT-AZ:availability_zone']
+
+#TomcatInstanceUtil.createTomcatInstance('az4')
+a = UsingInstancesDBUtil.getUsingInstancesByAZName('az1')
+print a

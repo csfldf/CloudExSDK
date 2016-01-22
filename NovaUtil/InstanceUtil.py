@@ -19,7 +19,7 @@ class InstanceUtil(object):
     @staticmethod
     def findInstaceByName(instanceName):
         nova = GetClientUtil.getNovaClient()
-        tartgetInstances =  nova.servers.list({'name':instanceName})
+        tartgetInstances =  nova.servers.list(search_opts = {'name':instanceName})
         if len(tartgetInstances) == 1:
             return tartgetInstances[0]
         else:

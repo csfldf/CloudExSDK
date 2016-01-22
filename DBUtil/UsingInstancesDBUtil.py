@@ -16,7 +16,8 @@ class UsingInstancesDBUtil(object):
                 resourceId VARCHAR(40) UNIQUE NOT NULL,
                 name VARCHAR(50) UNIQUE NOT NULL,
                 weight INT NOT NULL,
-                innerIP VARCHAR(15) NOT NULL
+                innerIP VARCHAR(15) NOT NULL,
+                azName VARCHAR(10) NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ''' % usingInstancesTableName
         dbcur = dbcon.cursor()
@@ -25,12 +26,12 @@ class UsingInstancesDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def addUsingInstance(resourceId, name, weight, innerIP):
+    def addUsingInstance(resourceId, name, weight, innerIP, azName='nova'):
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
-            INSERT INTO %s(resourceId, name, weight, innerIP)
-            VALUES('%s', '%s', %d, '%s');
-        ''' % (usingInstancesTableName, resourceId, name, weight, innerIP)
+            INSERT INTO %s(resourceId, name, weight, innerIP, azName)
+            VALUES('%s', '%s', %d, '%s', '%s');
+        ''' % (usingInstancesTableName, resourceId, name, weight, innerIP, azName)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
@@ -101,3 +102,37 @@ class UsingInstancesDBUtil(object):
         dbcur.close()
         dbcon.close()
         return uiIdsList
+
+
+    @staticmethod
+    def dropUsingInstanceTable():
+        dbcon = getDBConwithCloudExDB()
+        deleteStat = '''
+            DROP TABLE %s
+        ''' % usingInstancesTableName
+        dbcur = dbcon.cursor()
+        dbcur.execute(deleteStat)
+        dbcur.close()
+        dbcon.commit()
+        dbcon.close()
+
+    @staticmethod
+    def getUsingInstancesByAZName(azName):
+        dbcon = getDBConwithCloudExDB()
+        selectStat = '''
+            SELECT resourceId, name, azName
+            FROM %s
+            WHERE azName = '%s'
+        ''' % (usingInstancesTableName, azName)
+
+        dbcur = dbcon.cursor()
+        affectedRow = dbcur.execute(selectStat)
+        if affectedRow == 0:
+            return None
+
+        vmList = []
+        for vmInfo in dbcur:
+            vmList.append({'id':vmInfo[0], 'name':vmInfo[1], 'azName':vmInfo[2]})
+        dbcur.close()
+        dbcon.close()
+        return vmList

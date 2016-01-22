@@ -2,5 +2,5 @@
 # encoding: utf-8
 
 class PlacementComponent(object):
-    def getPlacementScheme(self, amount, upOrDown):
+    def getPlacementScheme(self, amount, isUp):
         pass
