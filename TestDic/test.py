@@ -8,7 +8,9 @@ from NovaUtil.InstanceUtil import InstanceUtil
 from CeilometerUtil.SampleUtil import SampleUtil
 from PredictUtil import *
 from ACRCUtil import topoFilePath
-
+from LoggingUtil import getLogUtil
+from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
+from copy import deepcopy
 #dropCloudExDB()
 #createCloudExDB()
 #UsingInstancesDBUtil.createUsingInstancesTable()
@@ -55,5 +57,11 @@ from ACRCUtil import topoFilePath
 #print instance.__dict__['OS-EXT-AZ:availability_zone']
 
 #TomcatInstanceUtil.createTomcatInstance('az4')
-a = UsingInstancesDBUtil.getUsingInstancesByAZName('az1')
-print a
+
+a = ACRCPlacementComponent()
+
+
+bc = deepcopy(a.cloudRoot)
+
+print id(a.cloudRoot.children[0].children[0])
+print id(bc.children[0].children[0])

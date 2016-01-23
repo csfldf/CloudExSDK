@@ -70,7 +70,7 @@ class TomcatInstanceUtil(object):
         nova = GetClientUtil.getNovaClient()
         instancesList = nova.servers.list()
         for instance in instancesList:
-            if len(instance.name) > 7:
+            if len(instance.name) > 20:
                 instance.delete()
                 UsingInstancesDBUtil.deleteUsingInstanceByResourceId(instance.id)
 
@@ -80,7 +80,7 @@ class TomcatInstanceUtil(object):
         instancesList = nova.servers.list()
         count = 0
         for instance in instancesList:
-            if len(instance.name) > 7:
+            if len(instance.name) > 20:
                 instance.delete()
                 UsingInstancesDBUtil.deleteUsingInstanceByResourceId(instance.id)
                 count += 1
