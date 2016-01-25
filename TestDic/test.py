@@ -12,7 +12,7 @@ from ACRCUtil import topoFilePath
 from LoggingUtil import getLogUtil
 from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
 from copy import deepcopy
-
+from NormalUtil import *
 
 #dropCloudExDB()
 #createCloudExDB()
@@ -64,19 +64,24 @@ from copy import deepcopy
 
 #WorkloadDBUtil.createWorkloadTable()
 
-WorkloadDBUtil.addFirstPeriodRealWorkload(5000)
-print WorkloadDBUtil.getAllWorkloadInfo()
+#WorkloadDBUtil.addFirstPeriodRealWorkload(5000)
+#print WorkloadDBUtil.getAllWorkloadInfo()
 
-WorkloadDBUtil.addPredictWorkloadToSpecificPeriod(2, 300)
-WorkloadDBUtil.addRealWorkloadToSpecificPeriod(2, 305)
-print WorkloadDBUtil.getAllWorkloadInfo()
+#WorkloadDBUtil.addPredictWorkloadToSpecificPeriod(2, 300)
+#WorkloadDBUtil.addRealWorkloadToSpecificPeriod(2, 305)
+#print WorkloadDBUtil.getAllWorkloadInfo()
 
-print WorkloadDBUtil.getNewstWorkload()
+#print WorkloadDBUtil.getNewstWorkload()
 
 #print WorkloadDBUtil.getAllWorkloadInfo()
 
-WorkloadDBUtil.clearWorkloadTable()
-print WorkloadDBUtil.getAllWorkloadInfo()
+#WorkloadDBUtil.clearWorkloadTable()
+#print WorkloadDBUtil.getAllWorkloadInfo()
 
 #print WorkloadDBUtil.getNewstWorkload()
 #WorkloadDBUtil.dropWorkloadTable()
+
+
+print isDecimal('5.5')
+print isDecimal('555')
+print isDecimal('a555')

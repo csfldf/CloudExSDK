@@ -3,8 +3,22 @@
 
 import re
 
+periodRecoderFile = '/home/sk/image/cloudExData/periodRecoder.db'
+periodRecoder = 'PERIODRECODER'
+
 def isNumber(strToTest):
     pattern = r'^\d+$'
+    m = re.match(pattern, strToTest)
+    if m:
+        return True
+    else:
+        return False
+
+def isDecimal(strToTest):
+    if not strToTest:
+        return False
+
+    pattern = r'^\d+\.\d+$'
     m = re.match(pattern, strToTest)
     if m:
         return True
