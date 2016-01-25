@@ -3,6 +3,7 @@
 
 from DBUtil import *
 from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
+from DBUtil.WorkloadDBUtil import WorkloadDBUtil
 from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from NovaUtil.InstanceUtil import InstanceUtil
 from CeilometerUtil.SampleUtil import SampleUtil
@@ -11,6 +12,8 @@ from ACRCUtil import topoFilePath
 from LoggingUtil import getLogUtil
 from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
 from copy import deepcopy
+
+
 #dropCloudExDB()
 #createCloudExDB()
 #UsingInstancesDBUtil.createUsingInstancesTable()
@@ -58,6 +61,5 @@ from copy import deepcopy
 
 #TomcatInstanceUtil.createTomcatInstance('az4')
 
-a = ACRCPlacementComponent()
 
-
+WorkloadDBUtil.createWorkloadTable()
