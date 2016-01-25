@@ -15,7 +15,7 @@ class WorkloadDBUtil(object):
             CREATE TABLE %s(
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 periodNo INT UNIQUE NOT NULL,
-                realWL INT NOT NULL,
+                realWL INT,
                 predictWL INT
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ''' % workloadTableName
@@ -26,15 +26,49 @@ class WorkloadDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def addNewRealWorkload(periodNo, realWL):
+    def addRealWorkloadToSpecificPeriod(periodNo, realWL):
         if not periodNo or not realWL:
-            raise Exception('no periodNo or workload')
+            raise Exception('no periodNo or real workload')
+
+        dbcon = getDBConwithCloudExDB()
+        updateStat = '''
+            UPDATE %s
+            SET realWL = $d
+            WHERE periodNo = $d
+        ''' % (workloadTableName, realWL, periodNo)
+        dbcur = dbcon.cursor()
+        dbcur.execute(updateStat)
+        dbcur.close()
+        dbcon.commit()
+        dbcon.close()
+
+
+    @staticmethod
+    def addFirstPeriodRealWorkload(realWL):
+        if not realWL:
+            raise Exception('no periodNo or real workload')
 
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
-            INSERT INTO %s(periodNo, realWL)
+            INSERT INTO %s(periodNo, realWL, predictWL)
+            VALUES(%d, %d, %d);
+        ''' % (1, realWL, -1)
+        dbcur = dbcon.cursor()
+        dbcur.execute(insertStat)
+        dbcur.close()
+        dbcon.commit()
+        dbcon.close()
+
+    @staticmethod
+    def addPredictWorkloadToSpecificPeriod(periodNo, predictWL):
+        if not periodNo or not predictWL:
+            raise Exception('no periodNo or predict workload')
+
+        dbcon = getDBConwithCloudExDB()
+        insertStat = '''
+            INSERT INTO %s(periodNo, predictWL)
             VALUES(%d, %d);
-        ''' % (workloadTableName, periodNo, realWL)
+        ''' % (workloadTableName, periodNo, predictWL)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
