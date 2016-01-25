@@ -33,8 +33,8 @@ class WorkloadDBUtil(object):
         dbcon = getDBConwithCloudExDB()
         updateStat = '''
             UPDATE %s
-            SET realWL = $d
-            WHERE periodNo = $d
+            SET realWL = %d
+            WHERE periodNo = %d
         ''' % (workloadTableName, realWL, periodNo)
         dbcur = dbcon.cursor()
         dbcur.execute(updateStat)
@@ -52,7 +52,7 @@ class WorkloadDBUtil(object):
         insertStat = '''
             INSERT INTO %s(periodNo, realWL, predictWL)
             VALUES(%d, %d, %d);
-        ''' % (1, realWL, -1)
+        ''' % (workloadTableName, 1, realWL, -1)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
