@@ -82,3 +82,15 @@ class WorkloadDBUtil(object):
         dbcon.commit()
         dbcon.close()
 
+    @staticmethod
+    def clearWorkloadTable():
+        dbcon = getDBConwithCloudExDB()
+        clearStat = '''
+            DELETE FROM %s
+        ''' % workloadTableName
+        dbcur = dbcon.cursor()
+        dbcur.execute(deleteStat)
+        dbcur.close()
+        dbcon.commit()
+        dbcon.close()
+
