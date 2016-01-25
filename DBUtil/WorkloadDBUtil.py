@@ -94,3 +94,23 @@ class WorkloadDBUtil(object):
         dbcon.commit()
         dbcon.close()
 
+    @staticmethod
+    def getNewstWorkload():
+        dbcon = getDBConwithCloudExDB()
+        selectStat = '''
+            SELECT workload
+            FROM %s
+            WHERE periodNo = (
+                SELECT MAX(periodNo)
+                FROM %s
+            )
+        ''' % (workloadTableName, workloadTableName)
+        dbcur = dbcon.cursor()
+        dbcur.execute(selectStat)
+        wl = dbcur.fetchone()
+        dbcur.close()
+        dbcon.close()
+        if wl:
+            return wl[0]
+        else:
+            return None
