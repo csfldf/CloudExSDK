@@ -64,7 +64,7 @@ from copy import deepcopy
 
 #WorkloadDBUtil.createWorkloadTable()
 
-WorkloadDBUtil.addWorkload(1, 5000)
+WorkloadDBUtil.addWorkload(2, 5000)
 print WorkloadDBUtil.getWorkloadCount()
 print WorkloadDBUtil.getAllWorkloadInfo()
 WorkloadDBUtil.clearWorkloadTable()

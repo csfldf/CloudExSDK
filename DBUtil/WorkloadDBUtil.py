@@ -89,7 +89,7 @@ class WorkloadDBUtil(object):
             DELETE FROM %s
         ''' % workloadTableName
         dbcur = dbcon.cursor()
-        dbcur.execute(deleteStat)
+        dbcur.execute(clearStat)
         dbcur.close()
         dbcon.commit()
         dbcon.close()
