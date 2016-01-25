@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 topoFilePath = '/home/sk/openstackPythonSDKTest/ConfigDic/CloudTopo'
+slaConfFilePath = '/home/sk/openstackPythonSDKTest/ConfigDic/SLA.config'
 
 def analyseJsonFormatConfigFile(configFileName):
     if not configFileName:

@@ -61,7 +61,3 @@ from copy import deepcopy
 a = ACRCPlacementComponent()
 
 
-bc = deepcopy(a.cloudRoot)
-
-print id(a.cloudRoot.children[0].children[0])
-print id(bc.children[0].children[0])

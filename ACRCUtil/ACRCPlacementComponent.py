@@ -96,7 +96,7 @@ class ACRCPlacementComponent(object):
     #由于执行了self.updateCloudInfo以后树和azList已经重新构建了，所以原来的azList没用了，只能用名字从最新的azList里找到最新的对应az
     def findNewAZWithAZName(self, azName):
         for az in self.azList:
-            if az.name = azName:
+            if az.name == azName:
                 return az
 
         return None
@@ -135,9 +135,13 @@ class ACRCPlacementComponent(object):
         while amount > 0:
             #scale up
             if isUp:
+                logger.info('scale up ' + str(vmsShouldBeScaled) + ' vms')
+
                 #一会写SLAHandler替换AVSLA
                 #可用性够
                 if avNow >= AVSLA:
+                    logger.debug('availability now is ' + str(avNow) + ' , not meet availability sla ' + str(AVSLA))
+
                     createdCount = self.scaleUpInAZWithVMs(amount)
                     amount -= createdCount
                     if amount > 0:
@@ -155,6 +159,8 @@ class ACRCPlacementComponent(object):
                     return True
                 #可用性不够, 一台一台加，尽量加在近的地方communicationDegree小，communicationDegree越大，对可用性的增加越高，communicationDegree自增是为了快速收敛
                 else:
+                    logger.debug('availability now is ' + str(avNow) + ' , meet availability sla ' + str(AVSLA))
+
                     createdCount = self.scaleInAZWithoutVMs(1, communicationDegree)
                     if not createdCount:
                         raise Exception('Could not launch vms in AZ without vms, so could not meet availability SLA!')
@@ -162,14 +168,18 @@ class ACRCPlacementComponent(object):
                     amount -= 1
             #scale down
             else:
+                logger.info('scale down ' + str(vmsShouldBeScaled) + ' vms')
+
                 downCount = self.scaleDownInAZWithVMs(amount)
                 amount -= downCount
                 if amount > 0:
+                    logger.debug('now all az with vms only have one vm!')
+
                     downCount = self.scaleDownMakesAZEmpty(amount)
                     amount -= downCount
 
                     if amount >= 0:
-                        logger.info('Could not scale down ' + str(vmsShouldBeScaled) + ' vms because of availability sla! we only scale down ' + str(vmsShouldBeScaled - amount) + ' vms!')
+                        logger.warning('Could not scale down ' + str(vmsShouldBeScaled) + ' vms because of availability sla! we only scale down ' + str(vmsShouldBeScaled - amount) + ' vms!')
                         return True
             avNow = self.calculateAvailability()
 
@@ -197,7 +207,7 @@ class ACRCPlacementComponent(object):
 
 
             for az in regionAZs:
-                vmsInAz = UsingInstancesDBUtil.getUsingInstancesByAZName(newAZ.name)
+                vmsInAz = UsingInstancesDBUtil.getUsingInstancesByAZName(az['azName'])
 
                 if vmsInAz:
                     azTreeNode = TopoTreeNode(az['azName'], AZAvailability)

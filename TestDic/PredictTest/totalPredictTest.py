@@ -91,13 +91,13 @@ maSheet.write_column('C2', maPredictList)
 dailySheet.write_row('A1', headings, bold)
 dailySheet.write_column('A2', index)
 dailySheet.write_column('B2', realWL)
-dailySheet.write_column('C2', maPredictList)
+dailySheet.write_column('C2', dailyPredictList)
 
 
 periodicSheet.write_row('A1', headings, bold)
 periodicSheet.write_column('A2', index)
 periodicSheet.write_column('B2', realWL)
-periodicSheet.write_column('C2', maPredictList)
+periodicSheet.write_column('C2', periodicPredictList)
 
 maChart = workbook.add_chart({'type': 'scatter',
                                  'subtype': 'smooth_with_markers'})

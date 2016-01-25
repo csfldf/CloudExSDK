@@ -82,20 +82,20 @@ class PeriodicPredictUtil(BasePredictUtil):
                 gabList.append(gab)
                 totalGab += gab
 
-            gabWorkload = totalGab / totalNumber + 1
+            #gabWorkload = totalGab / totalNumber + 1
 
             #max
             #gabWorkload = max(gabList)
 
             #%75
-            #gabList.sort()
-            #gl = len(gabList)
-            #tif = gl * 0.75
-            #if tif == int(tif):
-            #    targetIndex = int(tif)
-            #else:
-            #    targetIndex = int(tif) + 1
-            #gabWorkload = gabList[targetIndex - 1]
+            gabList.sort()
+            gl = len(gabList)
+            tif = gl * 0.75
+            if tif == int(tif):
+                targetIndex = int(tif)
+            else:
+                targetIndex = int(tif) + 1
+            gabWorkload = gabList[targetIndex - 1]
 
             return predictWorkload + gabWorkload
 
@@ -122,8 +122,12 @@ class PeriodicPredictUtil(BasePredictUtil):
         else:
             B = self.calculateB()
 
+            #debug
+            #if self.historyData[hdLen - 1] == 3790405 or self.historyData[hdLen - 1] == 2289805:
+            #    print B
+
             totalPastHWD = sum(self.historyData) - self.historyData[hdLen - 1]
             totalAVG = totalPastHWD / (hdLen - 1) + 1
 
-            originPWL = B * self.historyData[hdLen - 1] + (1 - B) * totalAVG
+            originPWL = (1 - B) * self.historyData[hdLen - 1] + B * totalAVG
         return self.adjustByAnalyseError(originPWL)
