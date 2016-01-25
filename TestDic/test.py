@@ -62,4 +62,10 @@ from copy import deepcopy
 #TomcatInstanceUtil.createTomcatInstance('az4')
 
 
-WorkloadDBUtil.createWorkloadTable()
+#WorkloadDBUtil.createWorkloadTable()
+
+WorkloadDBUtil.addWorkload(1, 5000)
+print WorkloadDBUtil.getWorkloadCount()
+print WorkloadDBUtil.getAllWorkloadInfo()
+WorkloadDBUtil.clearWorkloadTable()
+print WorkloadDBUtil.getWorkloadCount()
