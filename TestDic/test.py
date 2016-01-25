@@ -64,13 +64,14 @@ from copy import deepcopy
 
 #WorkloadDBUtil.createWorkloadTable()
 
-#WorkloadDBUtil.addWorkload(2, 5000)
-#WorkloadDBUtil.addWorkload(3, 6000)
-#WorkloadDBUtil.addWorkload(8, 8000)
-#WorkloadDBUtil.addWorkload(9, 9000)
-#print WorkloadDBUtil.getWorkloadCount()
-#print WorkloadDBUtil.getAllWorkloadInfo()
+WorkloadDBUtil.addNewRealWorkload(2, 5000)
+WorkloadDBUtil.addNewRealWorkload(3, 6000)
+WorkloadDBUtil.addNewRealWorkload(8, 8000)
+WorkloadDBUtil.addNewRealWorkload(9, 9000)
+print WorkloadDBUtil.getWorkloadCount()
+print WorkloadDBUtil.getAllWorkloadInfo()
 
-WorkloadDBUtil.clearWorkloadTable()
+#WorkloadDBUtil.clearWorkloadTable()
 
 print WorkloadDBUtil.getNewstWorkload()
+#WorkloadDBUtil.dropWorkloadTable()
