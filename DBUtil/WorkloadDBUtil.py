@@ -3,7 +3,7 @@
 
 from DBUtil import *
 
-workloadTableName = 'Workload'
+workloadTableName = 'WorkloadData'
 
 import MySQLdb
 
@@ -15,7 +15,8 @@ class WorkloadDBUtil(object):
             CREATE TABLE %s(
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 periodNo INT UNIQUE NOT NULL,
-                workload INT NOT NULL
+                realWL INT NOT NULL,
+                predictWL INT
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ''' % workloadTableName
         dbcur = dbcon.cursor()
@@ -25,15 +26,15 @@ class WorkloadDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def addWorkload(periodNo, workload):
-        if not periodNo or not workload:
+    def addNewRealWorkload(periodNo, realWL):
+        if not periodNo or not realWL:
             raise Exception('no periodNo or workload')
 
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
-            INSERT INTO %s(periodNo, workload)
+            INSERT INTO %s(periodNo, realWL)
             VALUES(%d, %d);
-        ''' % (workloadTableName, periodNo, workload)
+        ''' % (workloadTableName, periodNo, realWL)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
@@ -58,14 +59,14 @@ class WorkloadDBUtil(object):
     def getAllWorkloadInfo():
         dbcon = getDBConwithCloudExDB()
         selectStat = '''
-            SELECT workload
+            SELECT realWL, predictWL
             FROM %s
         ''' % workloadTableName
         dbcur = dbcon.cursor()
         dbcur.execute(selectStat)
         workloadList = []
         for wk in dbcur:
-            workloadList.append(wk[0])
+            workloadList.append((wk[0], wk[1]))
         dbcur.close()
         dbcon.close()
         return workloadList
@@ -98,7 +99,7 @@ class WorkloadDBUtil(object):
     def getNewstWorkload():
         dbcon = getDBConwithCloudExDB()
         selectStat = '''
-            SELECT workload
+            SELECT periodNo, realWL
             FROM %s
             WHERE periodNo = (
                 SELECT MAX(periodNo)
@@ -111,6 +112,6 @@ class WorkloadDBUtil(object):
         dbcur.close()
         dbcon.close()
         if wl:
-            return wl[0]
+            return {'periodNo':wl[0], 'realWL':wl[1]}
         else:
             return None
