@@ -37,11 +37,12 @@ class WorkloadDBUtil(object):
             WHERE periodNo = %d
         ''' % (workloadTableName, realWL, periodNo)
         dbcur = dbcon.cursor()
-        dbcur.execute(updateStat)
+        afl = dbcur.execute(updateStat)
         dbcur.close()
         dbcon.commit()
         dbcon.close()
-
+        if afl == 0:
+            raise Exception("add real workload to period that wasn't been predicted")
 
     @staticmethod
     def addFirstPeriodRealWorkload(realWL):
