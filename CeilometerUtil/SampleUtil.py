@@ -3,6 +3,7 @@
 
 from opsdkUtil.getClientUtil import GetClientUtil
 from NormalUtil import *
+from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
 
 class SampleUtil(object):
     @staticmethod
@@ -40,6 +41,34 @@ class SampleUtil(object):
         cpuUtilList = SampleUtil.getCpuUtilListByResourceId(resourceId)
         if cpuUtilList:
             return avgNumberList(cpuUtilList)
+        else:
+            return None
+
+    @staticmethod
+    def getAllUsingInstancesPeriodAVGCpuUtil(resourceId):
+        allUiIds = UsingInstancesDBUtil.getAllUsingInstancesIds()
+
+        uiAvgCpuList = []
+
+        for uiId in allUiIds:
+            uiAvgCpuList.append(SampleUtil.getCpuUtilPeriodAVGByResourceId(uiId))
+
+        if uiAvgCpuList:
+            return avgNumberList(uiAvgCpuList)
+        else:
+            return None
+
+    @staticmethod
+    def getAllUsingInstancesPeriodAVGMemoryUtil()
+        allUiIds = UsingInstancesDBUtil.getAllUsingInstancesIds()
+
+        uiAvgMemoryList = []
+
+        for uiId in allUiIds:
+            uiAvgMemoryList.append(SampleUtil.getMemoryUtilPeriodAVGByResourceId(uiId))
+
+        if uiAvgMemoryList:
+            return avgNumberList(uiAvgMemoryList)
         else:
             return None
 
