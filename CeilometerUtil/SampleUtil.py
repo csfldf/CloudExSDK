@@ -45,7 +45,7 @@ class SampleUtil(object):
             return None
 
     @staticmethod
-    def getAllUsingInstancesPeriodAVGCpuUtil(resourceId):
+    def getAllUsingInstancesPeriodAVGCpuUtil():
         allUiIds = UsingInstancesDBUtil.getAllUsingInstancesIds()
 
         uiAvgCpuList = []
@@ -59,7 +59,7 @@ class SampleUtil(object):
             return None
 
     @staticmethod
-    def getAllUsingInstancesPeriodAVGMemoryUtil()
+    def getAllUsingInstancesPeriodAVGMemoryUtil():
         allUiIds = UsingInstancesDBUtil.getAllUsingInstancesIds()
 
         uiAvgMemoryList = []

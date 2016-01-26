@@ -15,6 +15,7 @@ from copy import deepcopy
 from NormalUtil import *
 from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 
+
 #dropCloudExDB()
 #createCloudExDB()
 #UsingInstancesDBUtil.createUsingInstancesTable()
@@ -76,8 +77,8 @@ from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 
 #print WorkloadDBUtil.getAllWorkloadInfo()
 
-WorkloadDBUtil.clearWorkloadTable()
-print WorkloadDBUtil.getAllWorkloadInfo()
+#WorkloadDBUtil.clearWorkloadTable()
+#print WorkloadDBUtil.getAllWorkloadInfo()
 
 #print WorkloadDBUtil.getNewstWorkload()
 #WorkloadDBUtil.dropWorkloadTable()
@@ -99,3 +100,6 @@ print WorkloadDBUtil.getAllWorkloadInfo()
 
 #print PerformanceDBUtil.getPerformanceDataCount()
 
+
+print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
+print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
