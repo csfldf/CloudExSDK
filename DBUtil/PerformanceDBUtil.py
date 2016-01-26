@@ -7,7 +7,7 @@ performanceDataTableName = 'PerformanceData'
 
 import MySQLdb
 
-class PerformanceDataDBUtil(object):
+class PerformanceDBUtil(object):
     @staticmethod
     def createPerformanceDataTable():
         dbcon = getDBConwithCloudExDB()
@@ -88,7 +88,7 @@ class PerformanceDataDBUtil(object):
     def getNewestPerformanceData():
         dbcon = getDBConwithCloudExDB()
         selectStat = '''
-            SELECT periodNo, realWL
+            SELECT periodNo, minResponseTime, maxResponseTime, avgResponseTime, breakSLAPercent, avgCpuUtil, avgMemoryUtil
             FROM %s
             WHERE periodNo = (
                 SELECT MAX(periodNo)
@@ -97,10 +97,10 @@ class PerformanceDataDBUtil(object):
         ''' % (performanceDataTableName, performanceDataTableName)
         dbcur = dbcon.cursor()
         dbcur.execute(selectStat)
-        wl = dbcur.fetchone()
+        pd = dbcur.fetchone()
         dbcur.close()
         dbcon.close()
         if wl:
-            return {'periodNo':wl[0], 'realWL':wl[1]}
+            return {'periodNo':pd[0], 'minResponseTime':pd[1], 'maxResponseTime':pd[2], 'avgResponseTime':pd[3], 'breakSLAPercent':pd[4], 'avgCpuUtil':pd[5], 'avgMemoryUtil':pd[6]}
         else:
             return None

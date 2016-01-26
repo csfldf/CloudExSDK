@@ -130,7 +130,7 @@ class WorkloadDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def getNewstWorkload():
+    def getNewestWorkload():
         dbcon = getDBConwithCloudExDB()
         selectStat = '''
             SELECT periodNo, realWL
