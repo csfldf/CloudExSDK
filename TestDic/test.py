@@ -13,6 +13,7 @@ from LoggingUtil import getLogUtil
 from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
 from copy import deepcopy
 from NormalUtil import *
+from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 
 #dropCloudExDB()
 #createCloudExDB()
@@ -81,7 +82,20 @@ from NormalUtil import *
 #print WorkloadDBUtil.getNewstWorkload()
 #WorkloadDBUtil.dropWorkloadTable()
 
+PerformanceDBUtil.createPerformanceDataTable()
 
-print isDecimal('5.5')
-print isDecimal('555')
-print isDecimal('a555')
+
+performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
+PerformanceDBUtil.addPerformanceDataToSpecificPeriod(6, performanceData)
+
+performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
+PerformanceDBUtil.addPerformanceDataToSpecificPeriod(5, performanceData)
+
+print PerformanceDBUtil.getPerformanceDataCount()
+
+print PerformanceDBUtil.getNewestPerformanceData()
+
+PerformanceDBUtil.clearPerformanceDataTable()
+
+print PerformanceDBUtil.getPerformanceDataCount()
+

@@ -37,8 +37,8 @@ class PerformanceDBUtil(object):
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
             INSERT INTO %s(periodNo, minResponseTime, maxResponseTime, avgResponseTime, avgCpuUtil, avgMemoryUtil, breakSLAPercent)
-            VALUES($d, %f, %f, %f, %f, %f, %f);
-        ''' % (performanceDataTableName, performanceData['minResponseTime'], performanceData['maxResponseTime'], performanceData['avgResponseTime'], performanceData['avgCpuUtil'], performanceData['avgMemoryUtil'], performanceData['breakSLAPercent'])
+            VALUES(%d, %f, %f, %f, %f, %f, %f);
+        ''' % (performanceDataTableName, periodNo, performanceData['minResponseTime'], performanceData['maxResponseTime'], performanceData['avgResponseTime'], performanceData['avgCpuUtil'], performanceData['avgMemoryUtil'], performanceData['breakSLAPercent'])
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
@@ -100,7 +100,7 @@ class PerformanceDBUtil(object):
         pd = dbcur.fetchone()
         dbcur.close()
         dbcon.close()
-        if wl:
+        if pd:
             return {'periodNo':pd[0], 'minResponseTime':pd[1], 'maxResponseTime':pd[2], 'avgResponseTime':pd[3], 'breakSLAPercent':pd[4], 'avgCpuUtil':pd[5], 'avgMemoryUtil':pd[6]}
         else:
             return None
