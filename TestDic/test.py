@@ -15,7 +15,7 @@ from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
 from copy import deepcopy
 from NormalUtil import *
 from DBUtil.PerformanceDBUtil import PerformanceDBUtil
-
+from ACRCUtil.SLAHandler import SLAHandler
 
 #dropCloudExDB()
 #createCloudExDB()
@@ -105,6 +105,13 @@ from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 #print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
 #print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
 
-print WorkloadVMMapDBUtil.getLevelStep()
-print WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(200)
-print WorkloadVMMapDBUtil.getworkloadVMMapCount()
+#print WorkloadVMMapDBUtil.getLevelStep()
+#print WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(200)
+#print WorkloadVMMapDBUtil.getworkloadVMMapCount()
+
+sh = SLAHandler()
+
+print sh.getCpuUpperLimitSLA()
+print sh.getMemoryUpperLimitSLA()
+print sh.getResponseTimeDelaySLA()
+print sh.getSLABreakPercent()

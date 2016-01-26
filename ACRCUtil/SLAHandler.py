@@ -16,6 +16,7 @@ class SLAHandler(object):
         self.cpuUpperLimit = cpuUpperLimit
         self.memoryUpperLimit = memoryUpperLimit
         self.acrcPlacementComponent = ACRCPlacementComponent()
+        self.slaBreakPercent = slaBreakPercent
 
     def getAvailabilitySLA(self):
         return self.availability
@@ -28,6 +29,9 @@ class SLAHandler(object):
 
     def getMemoryUpperLimitSLA(self):
         return self.memoryUpperLimit
+
+    def getSLABreakPercent(self):
+        return self.slaBreakPercent
 
     def getInitialScheme(self):
         pass
