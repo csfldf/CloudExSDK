@@ -69,33 +69,33 @@ from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 #print WorkloadDBUtil.getAllWorkloadInfo()
 
 #WorkloadDBUtil.addPredictWorkloadToSpecificPeriod(2, 300)
-#WorkloadDBUtil.addRealWorkloadToSpecificPeriod(2, 305)
+#WorkloadDBUtil.addRealWorkloadToSpecificPeriod(3, 305)
 #print WorkloadDBUtil.getAllWorkloadInfo()
 
 #print WorkloadDBUtil.getNewstWorkload()
 
 #print WorkloadDBUtil.getAllWorkloadInfo()
 
-#WorkloadDBUtil.clearWorkloadTable()
-#print WorkloadDBUtil.getAllWorkloadInfo()
+WorkloadDBUtil.clearWorkloadTable()
+print WorkloadDBUtil.getAllWorkloadInfo()
 
 #print WorkloadDBUtil.getNewstWorkload()
 #WorkloadDBUtil.dropWorkloadTable()
 
-PerformanceDBUtil.createPerformanceDataTable()
+#PerformanceDBUtil.createPerformanceDataTable()
 
 
-performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
-PerformanceDBUtil.addPerformanceDataToSpecificPeriod(6, performanceData)
+#performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
+#PerformanceDBUtil.addPerformanceDataToSpecificPeriod(6, performanceData)
 
-performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
-PerformanceDBUtil.addPerformanceDataToSpecificPeriod(5, performanceData)
+#performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
+#PerformanceDBUtil.addPerformanceDataToSpecificPeriod(5, performanceData)
 
-print PerformanceDBUtil.getPerformanceDataCount()
+#print PerformanceDBUtil.getPerformanceDataCount()
 
-print PerformanceDBUtil.getNewestPerformanceData()
+#print PerformanceDBUtil.getNewestPerformanceData()
 
-PerformanceDBUtil.clearPerformanceDataTable()
+#PerformanceDBUtil.clearPerformanceDataTable()
 
-print PerformanceDBUtil.getPerformanceDataCount()
+#print PerformanceDBUtil.getPerformanceDataCount()
 
