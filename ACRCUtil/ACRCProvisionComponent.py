@@ -2,10 +2,12 @@
 # encoding: utf-8
 
 import shelve
-from ACRCUtil.ProvisionComponent import ProvisionComponent
 from PredictUtil import *
-from DBUtil.WorkloadDBUtil import WorkloadDBUtil
 from NormalUtil import *
+from DBUtil.WorkloadDBUtil import WorkloadDBUtil
+from ACRCUtil.ProvisionComponent import ProvisionComponent
+from DBUtil.WorkloadVMMapDBUtil import WorkloadVMMapDBUtil
+
 
 class ProvisionComponent(ProvisionComponent):
 
@@ -29,5 +31,10 @@ class ProvisionComponent(ProvisionComponent):
         if not periodNo:
             raise Exception('Can not get periodNo')
         WorkloadDBUtil.addPredictWorkloadToSpecificPeriod(periodNo, predictWL)
+
+        #查询需要的VM
+        levelStep = WorkloadVMMapDBUtil.getLevelStep()
+        level = predictWL / levelStep
+        predictVMNumbers = WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(level)
 
 

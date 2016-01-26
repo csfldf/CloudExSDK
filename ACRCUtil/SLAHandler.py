@@ -30,4 +30,4 @@ class SLAHandler(object):
         return self.memoryUpperLimit
 
     def getInitialScheme(self):
-
+        pass
