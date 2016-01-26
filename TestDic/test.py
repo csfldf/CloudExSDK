@@ -3,6 +3,7 @@
 
 from DBUtil import *
 from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
+from DBUtil.WorkloadVMMapDBUtil import WorkloadVMMapDBUtil
 from DBUtil.WorkloadDBUtil import WorkloadDBUtil
 from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from NovaUtil.InstanceUtil import InstanceUtil
@@ -101,5 +102,9 @@ from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 #print PerformanceDBUtil.getPerformanceDataCount()
 
 
-print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
-print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
+#print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
+#print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
+
+print WorkloadVMMapDBUtil.getLevelStep()
+print WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(200)
+print WorkloadVMMapDBUtil.getworkloadVMMapCount()

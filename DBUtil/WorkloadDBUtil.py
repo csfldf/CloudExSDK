@@ -5,7 +5,6 @@ from DBUtil import *
 
 workloadTableName = 'WorkloadData'
 
-import MySQLdb
 
 class WorkloadDBUtil(object):
     @staticmethod

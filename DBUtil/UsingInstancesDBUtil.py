@@ -5,7 +5,6 @@ from DBUtil import *
 
 usingInstancesTableName = 'UsingInstances'
 
-import MySQLdb
 class UsingInstancesDBUtil(object):
     @staticmethod
     def createUsingInstancesTable():

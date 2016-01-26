@@ -5,7 +5,6 @@ from DBUtil import *
 
 performanceDataTableName = 'PerformanceData'
 
-import MySQLdb
 
 class PerformanceDBUtil(object):
     @staticmethod

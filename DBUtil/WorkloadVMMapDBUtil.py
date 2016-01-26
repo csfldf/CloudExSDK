@@ -5,7 +5,7 @@ from DBUtil import *
 
 workloadVMMapTableName = 'WorkloadVMMap'
 
-class workloadVMMapDBUtil(object):
+class WorkloadVMMapDBUtil(object):
 
     @staticmethod
     def getworkloadVMMapCount():
