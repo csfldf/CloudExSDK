@@ -11,7 +11,7 @@ import time
 
 instanceNamePrefix = 'sjyvm-'
 flavorName = 'm1.small'
-imageName = 'tomcatServer'
+imageName = 'svTomcat'
 
 
 class TomcatInstanceUtil(object):
