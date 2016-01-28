@@ -8,15 +8,20 @@ from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
 from operator import attrgetter
 from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from LoggingUtil import getLogUtil
-from ACRCUtil.SLAHandler import SLAHandler
+#from ACRCUtil.SLAHandler import SLAHandler
 
 #不传参数默认日志级别是info
 logger = getLogUtil('ACRCPlacementComponent')
 
 class ACRCPlacementComponent(PlacementComponent):
-    def __init__(self, topoFile=topoFilePath, slaHandler=SLAHandler()):
+    def __init__(self, topoFile=topoFilePath, slaHandler=None):
+        from ACRCUtil.SLAHandler import SLAHandler
+
         self.topoFilePath = topoFilePath
-        self.slaHandler = slaHandler
+        if not slaHandler:
+            self.slaHandler = SLAHandler()
+        else:
+            self.slaHandler = slaHandler
         self.updateCloudInfo(topoFilePath)
 
     def calculateSubTreeInvalidProbability(self, treeNode):
