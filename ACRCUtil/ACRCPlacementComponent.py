@@ -15,10 +15,10 @@ logger = getLogUtil('ACRCPlacementComponent')
 
 class ACRCPlacementComponent(PlacementComponent):
     def __init__(self, topoFile=topoFilePath, slaHandler=None):
-        from ACRCUtil.SLAHandler import SLAHandler
 
         self.topoFilePath = topoFilePath
         if not slaHandler:
+            from ACRCUtil.SLAHandler import SLAHandler
             self.slaHandler = SLAHandler()
         else:
             self.slaHandler = slaHandler
