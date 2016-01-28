@@ -3,7 +3,7 @@
 
 import shelve
 from DBUtil.PerformanceDBUtil import PerformanceDBUtil
-#from ACRCUtil.SLAHandler import SLAHandler
+from ACRCUtil.SLAHandler import SLAHandler
 from LoggingUtil import getLogUtil
 
 fiboDataFile = '/home/sk/image/cloudExData/fiboData.db'
@@ -14,12 +14,8 @@ logger = getLogUtil('ACRCRuleChecker')
 
 
 class ACRCRuleChecker(object):
-    def __init__(self, slaHandler=None):
-        if not slaHandler:
-            from ACRCUtil.SLAHandler import SLAHandler
-            self.slaHandler = SLAHandler()
-        else:
-            self.slaHandler = slaHandler
+    def __init__(self, slaHandler=SLAHandler()):
+        self.slaHandler = slaHandler
 
     # 是否违反了时延违反百分比
     def isBreakRTPercentSLA(self, rtPercent):
