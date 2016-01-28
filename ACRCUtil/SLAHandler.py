@@ -1,18 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import shelve
 from ACRCUtil import slaConfFilePath
-from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
-from DBUtil.PerformanceDBUtil import PerformanceDBUtil
-from DBUtil.WorkloadDBUtil import WorkloadDBUtil
-from NormalUtil import periodRecoderFile
-from NormalUtil import periodRecoder
-from ACRCUtil.ACRCRuleChecker import fiboDataFile
-from ACRCUtil.ACRCRuleChecker import fiboDataName
-from PredictUtil import clearAllData
-from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
-from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
 
 initUsingInstancesNumbers = 1
 
@@ -28,7 +17,6 @@ class SLAHandler(object):
         self.cpuUpperLimit = cpuUpperLimit
         self.memoryUpperLimit = memoryUpperLimit
         self.slaBreakPercent = slaBreakPercent
-        self.acrcPlacementComponent = ACRCPlacementComponent()
 
     def getAvailabilitySLA(self):
         return self.availability
@@ -44,31 +32,4 @@ class SLAHandler(object):
 
     def getSLABreakPercent(self):
         return self.slaBreakPercent
-
-    @staticmethod
-    def getInitialScheme(self):
-        periodDB = shelve.open(periodRecoderFile)
-        periodDB[periodRecoder] = None
-        periodDB.close()
-
-        fiboDB = shelve.open(fiboDataFile)
-        fiboDB[fiboDataName] = None
-        fiboDB.close()
-
-        clearAllData()
-
-        PerformanceDBUtil.clearPerformanceDataTable()
-        WorkloadDBUtil.clearWorkloadTable()
-
-
-        uiCount = UsingInstancesDBUtil.getUsingInstancesCount()
-
-        if uiCount < initUsingInstancesNumbers:
-            TomcatInstanceUtil.resetAllUsingInstances()
-            self.acrcPlacementComponent.getPlacementScheme(initUsingInstancesNumbers - uiCount, True)
-        elif uiCount > initUsingInstancesNumbers:
-            self.acrcPlacementComponent.getPlacementScheme(uiCount - initUsingInstancesNumbers, False)
-            TomcatInstanceUtil.resetAllUsingInstances()
-        else:
-            TomcatInstanceUtil.resetAllUsingInstances()
 
