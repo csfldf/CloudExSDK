@@ -107,10 +107,6 @@ class TomcatInstanceUtil(object):
             if count == no:
                 break
 
-
-
-
-
     @staticmethod
     def createSpecifyNumberInstancesInAZ(no, azName=''):
         count = no
@@ -132,5 +128,4 @@ class TomcatInstanceUtil(object):
                 if InstanceUtil.isInstanceStatusActice(uiid):
                     usingInstancesIds.remove(uiid)
             time.sleep(5)
-
 

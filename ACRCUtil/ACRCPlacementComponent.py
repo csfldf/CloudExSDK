@@ -8,12 +8,15 @@ from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
 from operator import attrgetter
 from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from LoggingUtil import getLogUtil
+from ACRCUtil.SLAHandler import SLAHandler
 
+#不传参数默认日志级别是info
 logger = getLogUtil('ACRCPlacementComponent')
 
-class ACRCPlacementComponent(object):
-    def __init__(self, topoFile=topoFilePath):
+class ACRCPlacementComponent(PlacementComponent):
+    def __init__(self, topoFile=topoFilePath, slaHandler=SLAHandler()):
         self.topoFilePath = topoFilePath
+        self.slaHandler = slaHandler
         self.updateCloudInfo(topoFilePath)
 
     def calculateSubTreeInvalidProbability(self, treeNode):
@@ -88,7 +91,7 @@ class ACRCPlacementComponent(object):
     def canScaleDownOnlyVMInAZOrNot(self, az):
         az.regionTreeNode.children.remove(az.azTreeNode)
         avNow = self.calculateAvailability()
-        if avNow >= AVSLA:
+        if avNow >= self.slaHandler.getAvailabilitySLA():
             return True
         else:
             return False
@@ -137,10 +140,10 @@ class ACRCPlacementComponent(object):
             if isUp:
                 logger.info('scale up ' + str(vmsShouldBeScaled) + ' vms')
 
-                #一会写SLAHandler替换AVSLA
+                #一会写SLAHandler替换self.slaHandler.getAvailabilitySLA()
                 #可用性够
-                if avNow >= AVSLA:
-                    logger.debug('availability now is ' + str(avNow) + ' , not meet availability sla ' + str(AVSLA))
+                if avNow >= self.slaHandler.getAvailabilitySLA():
+                    logger.debug('availability now is ' + str(avNow) + ' , meeting availability sla ' + str(self.slaHandler.getAvailabilitySLA()))
 
                     createdCount = self.scaleUpInAZWithVMs(amount)
                     amount -= createdCount
@@ -159,7 +162,7 @@ class ACRCPlacementComponent(object):
                     return True
                 #可用性不够, 一台一台加，尽量加在近的地方communicationDegree小，communicationDegree越大，对可用性的增加越高，communicationDegree自增是为了快速收敛
                 else:
-                    logger.debug('availability now is ' + str(avNow) + ' , meet availability sla ' + str(AVSLA))
+                    logger.debug('availability now is ' + str(avNow) + ' , not meeting availability sla ' + str(self.slaHandler.getAvailabilitySLA()))
 
                     createdCount = self.scaleInAZWithoutVMs(1, communicationDegree)
                     if not createdCount:

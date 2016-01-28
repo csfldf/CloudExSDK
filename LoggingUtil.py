@@ -3,7 +3,8 @@
 
 import logging
 
-def getLogUtil(loggerName, logLevel = logging.INFO):
+
+def getLogUtil(loggerName, logLevel=logging.INFO):
     logger = logging.getLogger(loggerName)
     logger.setLevel(logLevel)
     fh = logging.FileHandler('/home/sk/image/cloudExLog/' + loggerName + '.log')

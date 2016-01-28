@@ -7,9 +7,15 @@ from NormalUtil import *
 from DBUtil.WorkloadDBUtil import WorkloadDBUtil
 from ACRCUtil.ProvisionComponent import ProvisionComponent
 from DBUtil.WorkloadVMMapDBUtil import WorkloadVMMapDBUtil
+from PredictUtil.ACRCPredictUtil import ACRCPredictUtil
+from ACRCUtil.ACRCRuleChecker import ACRCRuleChecker
+from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
 
 
-class ProvisionComponent(ProvisionComponent):
+class ACRCProvisionComponent(ProvisionComponent):
+    def __init__(self, predictor=ACRCPredictUtil, ruleChecker=ACRCRuleChecker):
+        super(ACRCProvisionComponent, self).__init__(predictor, ruleChecker)
+
 
     def getNumberOfVMsShouldBeScaled(self):
         if not self.predictor or not self.ruleChecker:
@@ -36,5 +42,17 @@ class ProvisionComponent(ProvisionComponent):
         levelStep = WorkloadVMMapDBUtil.getLevelStep()
         level = predictWL / levelStep
         predictVMNumbers = WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(level)
+        addedVMNumbers = self.ruleChecker.getNextAddedVMs()
 
+        nextPeriodVMNumbers = predictVMNumbers + addedVMNumbers
+
+        usingInstancesCount = UsingInstancesDBUtil.getUsingInstancesCount()
+        gab = abs(usingInstancesCount - nextPeriodVMNumbers)
+
+        if usingIntancesCount > nextPeriodVMNumbers:
+            return {'vmNumbers':gab, 'isUp':False}
+        elif usingIntancesCount < nextPeriodVMNumbers:
+            return {'vmNumbers':gab, 'isUp':True}
+        else:
+            return {'vmNumbers':gab}
 

@@ -225,6 +225,7 @@ def clearErrorData():
     edDB[errorParamData] = []
     edDB.close()
 
+
 def clearAllData():
     clearHistoryData()
     clearPredictData()
