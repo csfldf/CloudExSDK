@@ -76,6 +76,9 @@ class TomcatInstanceUtil(object):
 
     @staticmethod
     def deleteSpecifyNumberInstances(no):
+        if not no:
+            return
+
         nova = GetClientUtil.getNovaClient()
         instancesList = nova.servers.list()
         count = 0
@@ -90,6 +93,9 @@ class TomcatInstanceUtil(object):
 
     @staticmethod
     def deleteSpecifyNumberInstancesWithSpecifyAZ(no, azName):
+        if not no:
+            return
+
         holdVms = UsingInstancesDBUtil.getUsingInstancesByAZName(azName)
         holdVmsLen = len(holdVms)
         if no > holdVmsLen:

@@ -4,4 +4,5 @@
 from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
 
 a = ACRCPlacementComponent()
-a.getPlacementScheme(5, True)
+a.getPlacementScheme(1, False)
+print a.calculateAvailability()

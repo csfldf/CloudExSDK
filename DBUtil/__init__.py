@@ -2,11 +2,14 @@
 # encoding: utf-8
 
 import MySQLdb
+import time
 
 dbUser = 'root'
 dbUserPasswd = '123'
-dbHost = '202.120.40.20'
-dbPort = 43306
+#dbHost = '202.120.40.20'
+#dbPort = 43306
+dbHost = 'localhost'
+dbPort = 3306
 dbName = 'CloudEx'
 
 
@@ -15,7 +18,20 @@ def test():
 
 
 def getDBConwithCloudExDB():
-    return MySQLdb.connect(user=dbUser, passwd=dbUserPasswd, host=dbHost, port=dbPort, db=dbName)
+    count = 0
+    failureFlag = False
+    while True:
+        try:
+            dbcon = MySQLdb.connect(user=dbUser, passwd=dbUserPasswd, host=dbHost, port=dbPort, db=dbName)
+        except OperationalError, e:
+            print 'dberror: ' + e
+            count += 1
+            if count > 10:
+                break
+        else:
+            return dbcon
+    raise Exception('get db connection fail!')
+
 
 def getDBConwithNoDB():
     return MySQLdb.connect(user=dbUser, passwd=dbUserPasswd, host=dbHost, port=dbPort)

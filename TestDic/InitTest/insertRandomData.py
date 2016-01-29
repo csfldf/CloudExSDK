@@ -4,10 +4,10 @@
 from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 from DBUtil.WorkloadDBUtil import WorkloadDBUtil
 
-
+WorkloadDBUtil.clearWorkloadTable()
 WorkloadDBUtil.addFirstPeriodRealWorkload(5000)
 WorkloadDBUtil.addPredictWorkloadToSpecificPeriod(2, 300)
-WorkloadDBUtil.addRealWorkloadToSpecificPeriod(3, 305)
+WorkloadDBUtil.addRealWorkloadToSpecificPeriod(2, 305)
 print WorkloadDBUtil.getAllWorkloadInfo()
 
 

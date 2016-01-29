@@ -109,9 +109,7 @@ from ACRCUtil.SLAHandler import SLAHandler
 #print WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(200)
 #print WorkloadVMMapDBUtil.getworkloadVMMapCount()
 
-sh = SLAHandler()
-
-print sh.getCpuUpperLimitSLA()
-print sh.getMemoryUpperLimitSLA()
-print sh.getResponseTimeDelaySLA()
-print sh.getSLABreakPercent()
+TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az1')
+TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az2')
+TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az3')
+TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az4')

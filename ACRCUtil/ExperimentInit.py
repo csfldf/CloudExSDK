@@ -20,7 +20,6 @@ class ExperimentInit(object):
     def __init__(self):
         self.acrcPlacementComponent = ACRCPlacementComponent()
 
-    @staticmethod
     def getInitialScheme(self):
         periodDB = shelve.open(periodRecoderFile)
         periodDB[periodRecoder] = None

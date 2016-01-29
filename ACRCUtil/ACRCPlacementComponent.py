@@ -9,9 +9,10 @@ from operator import attrgetter
 from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from LoggingUtil import getLogUtil
 from ACRCUtil.SLAHandler import SLAHandler
+import logging
 
 #不传参数默认日志级别是info
-logger = getLogUtil('ACRCPlacementComponent')
+logger = getLogUtil('ACRCPlacementComponent', logging.DEBUG)
 
 class ACRCPlacementComponent(PlacementComponent):
     def __init__(self, topoFile=topoFilePath, slaHandler=SLAHandler()):
@@ -78,6 +79,11 @@ class ACRCPlacementComponent(PlacementComponent):
             if az.holdVMs:
                 #留一台不能全部关，所以-1
                 vmsDownCount = min(len(az.holdVMs) - 1, amount)
+
+                #本az只剩下一台机器了，在本函数中不能继续往下减，由后面的工作完成
+                if vmsDownCount == 0:
+                    continue
+
                 TomcatInstanceUtil.deleteSpecifyNumberInstancesWithSpecifyAZ(vmsDownCount, az.name)
                 self.updateCloudInfo(self.topoFilePath)
                 amount -= vmsDownCount
@@ -90,6 +96,8 @@ class ACRCPlacementComponent(PlacementComponent):
     #由于现在az里只有一个虚拟机了，这个函数看把这个az里的最后一个虚拟机拿掉可用性是否能满足要求
     def canScaleDownOnlyVMInAZOrNot(self, az):
         az.regionTreeNode.children.remove(az.azTreeNode)
+        if not az.regionTreeNode.children:
+            az.regionTreeNode.availability = 0
         avNow = self.calculateAvailability()
         if avNow >= self.slaHandler.getAvailabilitySLA():
             return True
@@ -110,13 +118,14 @@ class ACRCPlacementComponent(PlacementComponent):
         reversedAzList = sorted(self.azList, key=attrgetter('distance'), reverse=True)
 
         azNameList = []
-        for azName in reversedAzList:
-            azNameList.append(azName)
+        for az in reversedAzList:
+            azNameList.append(az.name)
 
         for azn in azNameList:
             az = self.findNewAZWithAZName(azn)
             if az.holdVMs:
                 if self.canScaleDownOnlyVMInAZOrNot(az):
+                    logger.debug('scale down the only vm in ' + az.name)
                     TomcatInstanceUtil.deleteSpecifyNumberInstancesWithSpecifyAZ(1, az.name)
                     amount -= 1
                     totalDownCount += 1
@@ -146,6 +155,8 @@ class ACRCPlacementComponent(PlacementComponent):
                     logger.debug('availability now is ' + str(avNow) + ' , meeting availability sla ' + str(self.slaHandler.getAvailabilitySLA()))
 
                     createdCount = self.scaleUpInAZWithVMs(amount)
+                    logger.debug('scale up ' + str(createdCount) + ' vms in az with vms!')
+
                     amount -= createdCount
                     if amount > 0:
                         #若在已有虚拟机的az里，已经无法启动amount台虚拟机了
@@ -155,10 +166,11 @@ class ACRCPlacementComponent(PlacementComponent):
                         #了，所以不考虑交互度，同时self.az是按distance由小
                         #到大排的，因此最先肯定也是考虑distance小的开始
                         createdCount = self.scaleInAZWithoutVMs(amount, 0)
+                        logger.debug('scale up ' + str(createdCount) + ' vms in az without vms!')
                         amount -= createdCount
 
                         if amount > 0:
-                            raise Exception('could not launch ' + str(vmsShouldBeScaled) + ' vms!')
+                            raise Exception('could not launch ' + str(vmsShouldBeScaled) + ' vms, left ' + str(amount) + ' not to be launched!')
                     return True
                 #可用性不够, 一台一台加，尽量加在近的地方communicationDegree小，communicationDegree越大，对可用性的增加越高，communicationDegree自增是为了快速收敛
                 else:
@@ -175,16 +187,19 @@ class ACRCPlacementComponent(PlacementComponent):
 
                 downCount = self.scaleDownInAZWithVMs(amount)
                 amount -= downCount
+
                 if amount > 0:
                     logger.debug('now all az with vms only have one vm!')
 
                     downCount = self.scaleDownMakesAZEmpty(amount)
                     amount -= downCount
 
-                    if amount >= 0:
+                    if amount > 0:
                         logger.warning('Could not scale down ' + str(vmsShouldBeScaled) + ' vms because of availability sla! we only scale down ' + str(vmsShouldBeScaled - amount) + ' vms!')
                         return True
             avNow = self.calculateAvailability()
+
+        logger.info('scale successfully, the availability now is ' + str(self.calculateAvailability()))
 
     def updateCloudInfo(self, topoFilePath):
         if not topoFilePath:
@@ -222,11 +237,15 @@ class ACRCPlacementComponent(PlacementComponent):
 
                 azList.append(newAZ)
 
+            #如果region下面的az都没有vm，则说明本application还没有部署到本region下的az里，本region对于本application的可用性为0
+            if not regionTreeNode.children:
+                regionTreeNode.availability = 0
+
         self.cloudRoot = cloudRoot
         self.azList = sorted(azList, key=attrgetter('distance'))
 
 class AvailabilityZone(object):
-    def __init__(self, name, distance, region, azTreeNode=None, regionTreeNode=None, maxVMCount=3):
+    def __init__(self, name, distance, region, azTreeNode=None, regionTreeNode=None, maxVMCount=6):
         self.name = name
         self.distance = distance
         #用默认参数会导致所有实例共享一个列表
