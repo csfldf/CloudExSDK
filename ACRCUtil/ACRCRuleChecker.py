@@ -47,6 +47,8 @@ class ACRCRuleChecker(object):
         if not rtPercent or not cpuUtil or not memoryUtil or not periodNo:
             raise Exception('Can not get Performance Data correctly')
 
+        logger.info('period ' + str(periodNo) + ': rtPercent:' + str(rtPercent) + ' cpuUtil:' + str(cpuUtil) + ' memoryUtil:' + str(memoryUtil))
+
         fiboDB = shelve.open(fiboDataFile)
         fiboData = fiboDB.get(fiboDataName, None)
 
@@ -67,7 +69,7 @@ class ACRCRuleChecker(object):
         if breakFlag:
             newTarget = fiboData[0] + fiboData[1]
             fiboData.pop(0)
-            newTarget.append(newTarget)
+            fiboData.append(newTarget)
         else:
             if fiboData[0] != 0:
                 newTarget = fiboData[1] - fiboData[0]

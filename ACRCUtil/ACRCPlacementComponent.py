@@ -59,7 +59,7 @@ class ACRCPlacementComponent(PlacementComponent):
         return createdCount
 
     #在还没有vm的AZ里scaleup, 提高可用性
-    def scaleInAZWithoutVMs(self, amount, comd):
+    def scaleUpInAZWithoutVMs(self, amount, comd):
         createdCount = 0
         for az in self.azList:
             if not az.holdVMs and az.distance >= comd:
@@ -165,7 +165,7 @@ class ACRCPlacementComponent(PlacementComponent):
                         #因为此时可用性已经满足，所以只要启足够的虚拟机就行
                         #了，所以不考虑交互度，同时self.az是按distance由小
                         #到大排的，因此最先肯定也是考虑distance小的开始
-                        createdCount = self.scaleInAZWithoutVMs(amount, 0)
+                        createdCount = self.scaleUpInAZWithoutVMs(amount, 0)
                         logger.debug('scale up ' + str(createdCount) + ' vms in az without vms!')
                         amount -= createdCount
 
@@ -176,7 +176,7 @@ class ACRCPlacementComponent(PlacementComponent):
                 else:
                     logger.debug('availability now is ' + str(avNow) + ' , not meeting availability sla ' + str(self.slaHandler.getAvailabilitySLA()))
 
-                    createdCount = self.scaleInAZWithoutVMs(1, communicationDegree)
+                    createdCount = self.scaleUpInAZWithoutVMs(1, communicationDegree)
                     if not createdCount:
                         raise Exception('Could not launch vms in AZ without vms, so could not meet availability SLA!')
                     communicationDegree += 1

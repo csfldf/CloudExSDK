@@ -84,13 +84,15 @@ from ACRCUtil.SLAHandler import SLAHandler
 #print WorkloadDBUtil.getNewstWorkload()
 #WorkloadDBUtil.dropWorkloadTable()
 
+
+#PerformanceDBUtil.dropPerformanceDataTable()
 #PerformanceDBUtil.createPerformanceDataTable()
 
 
-#performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
+#performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88}
 #PerformanceDBUtil.addPerformanceDataToSpecificPeriod(6, performanceData)
 
-#performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6}
+#performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88}
 #PerformanceDBUtil.addPerformanceDataToSpecificPeriod(5, performanceData)
 
 #print PerformanceDBUtil.getPerformanceDataCount()
@@ -102,14 +104,14 @@ from ACRCUtil.SLAHandler import SLAHandler
 #print PerformanceDBUtil.getPerformanceDataCount()
 
 
-#print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
-#print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
+print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
+print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
 
 #print WorkloadVMMapDBUtil.getLevelStep()
 #print WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(200)
 #print WorkloadVMMapDBUtil.getworkloadVMMapCount()
 
-TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az1')
-TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az2')
-TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az3')
-TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az4')
+#TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az1')
+#TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az2')
+#TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az3')
+#TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az4')

@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import shelve
+import logging
 from PredictUtil import *
 from NormalUtil import *
 from DBUtil.WorkloadDBUtil import WorkloadDBUtil
@@ -10,10 +11,14 @@ from DBUtil.WorkloadVMMapDBUtil import WorkloadVMMapDBUtil
 from PredictUtil.ACRCPredictUtil import ACRCPredictUtil
 from ACRCUtil.ACRCRuleChecker import ACRCRuleChecker
 from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
+from math import ceil
+from LoggingUtil import getLogUtil
 
+#不传参数默认日志级别是info
+logger = getLogUtil('ACRCProvisionComponent')
 
 class ACRCProvisionComponent(ProvisionComponent):
-    def __init__(self, predictor=ACRCPredictUtil, ruleChecker=ACRCRuleChecker):
+    def __init__(self, predictor=ACRCPredictUtil(), ruleChecker=ACRCRuleChecker()):
         super(ACRCProvisionComponent, self).__init__(predictor, ruleChecker)
 
 
@@ -40,18 +45,23 @@ class ACRCProvisionComponent(ProvisionComponent):
 
         #查询需要的VM
         levelStep = WorkloadVMMapDBUtil.getLevelStep()
-        level = predictWL / levelStep
+        level = ceil(predictWL / float(levelStep))
         predictVMNumbers = WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(level)
+
+        logger.info('PredictWorkload:' + str(predictWL) + ' level:' + str(level) + ' predictVMNumbers:' + str(predictVMNumbers))
+
         addedVMNumbers = self.ruleChecker.getNextAddedVMs()
+
+        logger.info('addedVMNumbers:' + str(addedVMNumbers))
 
         nextPeriodVMNumbers = predictVMNumbers + addedVMNumbers
 
         usingInstancesCount = UsingInstancesDBUtil.getUsingInstancesCount()
         gab = abs(usingInstancesCount - nextPeriodVMNumbers)
 
-        if usingIntancesCount > nextPeriodVMNumbers:
+        if usingInstancesCount > nextPeriodVMNumbers:
             return {'vmNumbers':gab, 'isUp':False}
-        elif usingIntancesCount < nextPeriodVMNumbers:
+        elif usingInstancesCount < nextPeriodVMNumbers:
             return {'vmNumbers':gab, 'isUp':True}
         else:
             return {'vmNumbers':gab}
