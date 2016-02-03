@@ -3,6 +3,7 @@
 
 import MySQLdb
 import time
+from MySQLdb import OperationalError
 
 dbUser = 'root'
 dbUserPasswd = '123'

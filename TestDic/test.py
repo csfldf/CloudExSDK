@@ -86,26 +86,26 @@ from ACRCUtil.SLAHandler import SLAHandler
 
 
 #PerformanceDBUtil.dropPerformanceDataTable()
-#PerformanceDBUtil.createPerformanceDataTable()
+PerformanceDBUtil.createPerformanceDataTable()
 
 
-#performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88}
-#PerformanceDBUtil.addPerformanceDataToSpecificPeriod(6, performanceData)
+performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88, 'vmNumbers':3}
+PerformanceDBUtil.addPerformanceDataToSpecificPeriod(6, performanceData)
 
-#performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88}
-#PerformanceDBUtil.addPerformanceDataToSpecificPeriod(5, performanceData)
+performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88, 'vmNumbers':5}
+PerformanceDBUtil.addPerformanceDataToSpecificPeriod(5, performanceData)
 
-#print PerformanceDBUtil.getPerformanceDataCount()
+print PerformanceDBUtil.getPerformanceDataCount()
 
-#print PerformanceDBUtil.getNewestPerformanceData()
+print PerformanceDBUtil.getNewestPerformanceData()
 
-#PerformanceDBUtil.clearPerformanceDataTable()
+PerformanceDBUtil.clearPerformanceDataTable()
 
-#print PerformanceDBUtil.getPerformanceDataCount()
+print PerformanceDBUtil.getPerformanceDataCount()
 
 
-print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
-print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
+#print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()
+#print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
 
 #print WorkloadVMMapDBUtil.getLevelStep()
 #print WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(200)

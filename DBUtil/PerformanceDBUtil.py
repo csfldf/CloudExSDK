@@ -20,7 +20,8 @@ class PerformanceDBUtil(object):
                 breakSLAPercent DOUBLE NOT NULL,
                 avgCpuUtil DOUBLE NOT NULL,
                 avgMemoryUtil DOUBLE NOT NULL,
-                availability DOUBLE NOT NULL
+                availability DOUBLE NOT NULL,
+                vmNumbers INT NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ''' % performanceDataTableName
         dbcur = dbcon.cursor()
@@ -36,9 +37,9 @@ class PerformanceDBUtil(object):
 
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
-            INSERT INTO %s(periodNo, minResponseTime, maxResponseTime, avgResponseTime, avgCpuUtil, avgMemoryUtil, breakSLAPercent, availability)
-            VALUES(%d, %f, %f, %f, %f, %f, %f, %f);
-        ''' % (performanceDataTableName, periodNo, performanceData['minResponseTime'], performanceData['maxResponseTime'], performanceData['avgResponseTime'], performanceData['avgCpuUtil'], performanceData['avgMemoryUtil'], performanceData['breakSLAPercent'], performanceData['availability'])
+            INSERT INTO %s(periodNo, minResponseTime, maxResponseTime, avgResponseTime, avgCpuUtil, avgMemoryUtil, breakSLAPercent, availability, vmNumbers)
+            VALUES(%d, %f, %f, %f, %f, %f, %f, %f, %d);
+        ''' % (performanceDataTableName, periodNo, performanceData['minResponseTime'], performanceData['maxResponseTime'], performanceData['avgResponseTime'], performanceData['avgCpuUtil'], performanceData['avgMemoryUtil'], performanceData['breakSLAPercent'], performanceData['availability'], performanceData['vmNumbers'])
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
@@ -88,7 +89,7 @@ class PerformanceDBUtil(object):
     def getNewestPerformanceData():
         dbcon = getDBConwithCloudExDB()
         selectStat = '''
-            SELECT periodNo, minResponseTime, maxResponseTime, avgResponseTime, breakSLAPercent, avgCpuUtil, avgMemoryUtil, availability
+            SELECT periodNo, avgResponseTime, breakSLAPercent, avgCpuUtil, avgMemoryUtil
             FROM %s
             WHERE periodNo = (
                 SELECT MAX(periodNo)
@@ -101,6 +102,6 @@ class PerformanceDBUtil(object):
         dbcur.close()
         dbcon.close()
         if pd:
-            return {'periodNo':pd[0], 'minResponseTime':pd[1], 'maxResponseTime':pd[2], 'avgResponseTime':pd[3], 'breakSLAPercent':pd[4], 'avgCpuUtil':pd[5], 'avgMemoryUtil':pd[6], 'availability':pd[7]}
+            return {'periodNo':pd[0], 'avgResponseTime':pd[1], 'breakSLAPercent':pd[2], 'avgCpuUtil':pd[3], 'avgMemoryUtil':pd[4]}
         else:
             return None
