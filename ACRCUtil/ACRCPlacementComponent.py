@@ -84,6 +84,9 @@ class ACRCPlacementComponent(PlacementComponent):
                 if vmsDownCount == 0:
                     continue
 
+                #有几次出错，调试用
+                logger.debug('scaleDownInAZWithVMs: downNumber:' + str(vmsDownCount) + ' az:'  + az.name + ' len az.holdVMs:' + str(len(az.holdVMs)) +  ' amount:' + str(amount))
+
                 TomcatInstanceUtil.deleteSpecifyNumberInstancesWithSpecifyAZ(vmsDownCount, az.name)
                 self.updateCloudInfo(self.topoFilePath)
                 amount -= vmsDownCount

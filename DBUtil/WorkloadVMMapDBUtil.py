@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 from DBUtil import *
+from math import ceil
 
 workloadVMMapTableName = 'WorkloadVMMap'
 
@@ -55,3 +56,9 @@ class WorkloadVMMapDBUtil(object):
             raise Exception('can not get vmNumbers to level %d' % level)
         else:
             return vmn[0]
+
+    @staticmethod
+    def getTargetVMsToSpecificWorkload(workload):
+        levelStep = WorkloadVMMapDBUtil.getLevelStep()
+        level = ceil(workload / float(levelStep))
+        return WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(level)

@@ -13,7 +13,7 @@ from PredictUtil import clearAllData
 from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
 
-initUsingInstancesNumbers = 1
+initUsingInstancesNumbers = 3
 
 
 class ExperimentInit(object):

@@ -99,7 +99,7 @@ class TomcatInstanceUtil(object):
         holdVms = UsingInstancesDBUtil.getUsingInstancesByAZName(azName)
         holdVmsLen = len(holdVms)
         if no > holdVmsLen:
-            raise Exception('Could not down ' + no + ' vms in ' + azName + ', it only has ' + holdVmsLen + ' vms!')
+            raise Exception('Could not down ' + str(no) + ' vms in ' + str(azName) + ', it only has ' + str(holdVmsLen) + ' vms!')
 
         nova = GetClientUtil.getNovaClient()
 

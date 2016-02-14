@@ -44,7 +44,7 @@ class ACRCRuleChecker(object):
         memoryUtil = newestPD['avgMemoryUtil']
         periodNo = newestPD['periodNo']
 
-        if not rtPercent or not cpuUtil or not memoryUtil or not periodNo:
+        if rtPercent == None or cpuUtil == None or memoryUtil == None or periodNo == None:
             raise Exception('Can not get Performance Data correctly')
 
         logger.info('period ' + str(periodNo) + ': rtPercent:' + str(rtPercent) + ' cpuUtil:' + str(cpuUtil) + ' memoryUtil:' + str(memoryUtil))

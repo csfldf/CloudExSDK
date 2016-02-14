@@ -16,6 +16,5 @@ from CeilometerUtil.SampleUtil import SampleUtil
 #ml = ceilometer.new_samples.list(q=query)
 #print ml[0].metadata['flavor.ram']
 
-cpuList = SampleUtil.getCpuUtilListByResourceId('3c366418-8a4e-440a-b474-cf4dacd5e6c3')
-print len(cpuList)
-
+print SampleUtil.getAllUsingInstancesPeriodAVGCpuUtil()
+print SampleUtil.getAllUsingInstancesPeriodAVGMemoryUtil()

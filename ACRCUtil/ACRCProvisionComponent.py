@@ -44,11 +44,9 @@ class ACRCProvisionComponent(ProvisionComponent):
         WorkloadDBUtil.addPredictWorkloadToSpecificPeriod(periodNo, predictWL)
 
         #查询需要的VM
-        levelStep = WorkloadVMMapDBUtil.getLevelStep()
-        level = ceil(predictWL / float(levelStep))
-        predictVMNumbers = WorkloadVMMapDBUtil.getTargetVMsToSpecificLevel(level)
+        predictVMNumbers = WorkloadVMMapDBUtil.getTargetVMsToSpecificWorkload(predictWL)
 
-        logger.info('PredictWorkload:' + str(predictWL) + ' level:' + str(level) + ' predictVMNumbers:' + str(predictVMNumbers))
+        logger.info('PredictWorkload:' + str(predictWL) + ' predictVMNumbers:' + str(predictVMNumbers))
 
         addedVMNumbers = self.ruleChecker.getNextAddedVMs()
 
