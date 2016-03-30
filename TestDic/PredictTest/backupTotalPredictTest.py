@@ -10,9 +10,6 @@ from PredictUtil.MAPredictUtil import MAPredictUtil
 from PredictUtil.ACRCPredictUtil import ACRCPredictUtil
 from PredictUtil.DailyPredictUtil import DailyPredictUtil
 from PredictUtil.PeriodicPredictUtil import PeriodicPredictUtil
-#from BADPredictUtil.DailyPredictUtil import DailyPredictUtil
-#from BADPredictUtil.PeriodicPredictUtil import PeriodicPredictUtil
-#from BADPredictUtil.MAPredictUtil import MAPredictUtil
 
 clearAllData()
 
@@ -51,6 +48,9 @@ for wl in realWL:
     periodicPredictList.append(periodicPredictWL)
     dailyPredictList.append(dailyPreidictWL)
 
+#pdDB = shelve.open(predictDataFile)
+#statPD = pdDB[statPredictData]
+#pdDB.close()
 
 
 realWL.pop(0)
@@ -61,6 +61,14 @@ periodicPredictList.pop()
 maCompareTuple = zip(realWL, maPredictList)
 dailyCompareTuple = zip(realWL, dailyPredictList)
 periodicCompareTuple = zip(realWL, periodicPredictList)
+#statPD.pop(0)
+#statPD.pop()
+
+#if len(realWL) != len(statPD):
+#    raise Exception('the length of realWL and statPD not same!')
+
+
+#ma
 
 index = range(len(realWL))
 
@@ -91,45 +99,17 @@ periodicSheet.write_column('A2', index)
 periodicSheet.write_column('B2', realWL)
 periodicSheet.write_column('C2', periodicPredictList)
 
-
 maChart = workbook.add_chart({'type': 'scatter',
                                  'subtype': 'smooth_with_markers'})
-
-
 maChart.add_series({
         'name': '=ma!$B$1',
         'categories': '=ma!$A$2:$A$' + str(1 + len(index)),
-        'values': '=ma!$B$2:$B$' + str(1 + len(index)),
-        'marker':{'type': 'square', 'size' : 4},
-        'line':{'width': 1.25}
-        })
+        'values': '=ma!$B$2:$B$' + str(1 + len(index))})
 
 maChart.add_series({
         'name': '=ma!$C$1',
         'categories': '=ma!$A$2:$A$' + str(1 + len(index)),
-        'values': '=ma!$C$2:$C$' + str(1 + len(index)),
-        'marker':{'type': 'circle',  'size' : 4},
-        'line':{'width': 1.25}
-        })
-
-maChart.set_legend({'font': {'size':8, 'name':'Times New Roman', 'bold':True}})
-
-
-maChart.set_size({'width': 700, 'height': 400})
-
-#设置X轴
-maChart.set_x_axis({
-        'name': 'Period Number',
-        'name_font': {'size': 8, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 8, 'bold': True, 'name':'Times New Roman'}
-                })
-#设置Y轴
-maChart.set_y_axis({
-        'name': 'Number of Request',
-        'name_font': {'size': 8, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 8, 'bold': True, 'name':'Times New Roman'}
-                })
-
+        'values': '=ma!$C$2:$C$' + str(1 + len(index))})
 
 maRelativeError = calculateRelativeError(maCompareTuple)
 maQualified = calculateQualified(maCompareTuple)
@@ -139,8 +119,9 @@ maQualified = round(maQualified * 100, 2)
 
 print 'ma: RelativeError: %f, Qualified: %f' % (maRelativeError, maQualified)
 
-#maChart.set_title({'name': 'ma RelativeError:' + str(maRelativeError) + '% PassRate:' + str(maQualified) + '%'})
+maChart.set_size({'width': 1400, 'height': 800})
 
+maChart.set_title({'name': 'ma RelativeError:' + str(maRelativeError) + '% PassRate:' + str(maQualified) + '%'})
 maSheet.insert_chart('E1', maChart)
 
 
@@ -149,40 +130,12 @@ periodicChart = workbook.add_chart({'type': 'scatter',
 periodicChart.add_series({
         'name': '=periodic!$B$1',
         'categories': '=periodic!$A$2:$A$' + str(1 + len(index)),
-        'values': '=periodic!$B$2:$B$' + str(1 + len(index)),
-        'marker':{'type': 'square', 'size' : 4},
-        'line':{'width': 1.25}
-        })
+        'values': '=periodic!$B$2:$B$' + str(1 + len(index))})
 
 periodicChart.add_series({
         'name': '=periodic!$C$1',
         'categories': '=periodic!$A$2:$A$' + str(1 + len(index)),
-        'values': '=periodic!$C$2:$C$' + str(1 + len(index)),
-        'marker':{'type': 'circle', 'size' : 4},
-        'line':{'width': 1.25}
-        })
-
-
-periodicChart.set_legend({'font': {'size':15, 'name':'Times New Roman', 'bold':True}})
-
-
-periodicChart.set_size({'width': 700, 'height': 370})
-
-#设置X轴
-periodicChart.set_x_axis({
-        'name': 'Period Number',
-        'name_font': {'size': 15, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 11, 'bold': True, 'name':'Times New Roman'},
-        'max': 310,
-        'min': 0
-                })
-#设置Y轴
-periodicChart.set_y_axis({
-        'name': 'Number of Requests',
-        'name_font': {'size': 15, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 11, 'bold': True, 'name':'Times New Roman'},
-        'max': 7000000
-                })
+        'values': '=periodic!$C$2:$C$' + str(1 + len(index))})
 
 
 periodicRelativeError = calculateRelativeError(periodicCompareTuple)
@@ -193,8 +146,9 @@ periodicQualified = round(periodicQualified * 100, 2)
 
 print 'periodic: RelativeError: %f, Qualified: %f' % (periodicRelativeError, periodicQualified)
 
+periodicChart.set_size({'width': 1400, 'height': 800})
 
-#periodicChart.set_title({'name': 'periodic RelativeError:' + str(periodicRelativeError) + '% PassRate:' + str(periodicQualified) + '%'})
+periodicChart.set_title({'name': 'periodic RelativeError:' + str(periodicRelativeError) + '% PassRate:' + str(periodicQualified) + '%'})
 periodicSheet.insert_chart('E1', periodicChart)
 
 
@@ -204,37 +158,12 @@ dailyChart = workbook.add_chart({'type': 'scatter',
 dailyChart.add_series({
         'name': '=daily!$B$1',
         'categories': '=daily!$A$2:$A$' + str(1 + len(index)),
-        'values': '=daily!$B$2:$B$' + str(1 + len(index)),
-        'marker':{'type': 'square', 'size' : 4},
-        'line':{'width': 1.25}
-        })
+        'values': '=daily!$B$2:$B$' + str(1 + len(index))})
 
 dailyChart.add_series({
         'name': '=daily!$C$1',
         'categories': '=daily!$A$2:$A$' + str(1 + len(index)),
-        'values': '=daily!$C$2:$C$' + str(1 + len(index)),
-        'marker':{'type': 'circle', 'size' : 4},
-        'line':{'width': 1.25}
-        })
-
-
-dailyChart.set_legend({'font': {'size':8, 'name':'Times New Roman', 'bold':True}})
-
-
-dailyChart.set_size({'width': 700, 'height': 400})
-
-#设置X轴
-dailyChart.set_x_axis({
-        'name': 'Period Number',
-        'name_font': {'size': 8, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 8, 'bold': True, 'name':'Times New Roman'}
-                })
-#设置Y轴
-dailyChart.set_y_axis({
-        'name': 'Number of Request',
-        'name_font': {'size': 8, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 8, 'bold': True, 'name':'Times New Roman'}
-                })
+        'values': '=daily!$C$2:$C$' + str(1 + len(index))})
 
 dailyRelativeError = calculateRelativeError(dailyCompareTuple)
 dailyQualified = calculateQualified(dailyCompareTuple)
@@ -244,7 +173,10 @@ dailyQualified = round(dailyQualified * 100, 2)
 
 print 'daily: RelativeError: %f, Qualified: %f' % (dailyRelativeError, dailyQualified)
 
-#dailyChart.set_title({'name': 'daily RelativeError:' + str(dailyRelativeError) + '% PassRate:' + str(dailyQualified) + '%'})
+dailyChart.set_size({'width': 1400, 'height': 800})
+
+
+dailyChart.set_title({'name': 'daily RelativeError:' + str(dailyRelativeError) + '% PassRate:' + str(dailyQualified) + '%'})
 dailySheet.insert_chart('E1', dailyChart)
 
 
@@ -294,39 +226,12 @@ acrcChart = workbook.add_chart({'type': 'scatter',
 acrcChart.add_series({
         'name': '=acrc!$B$1',
         'categories': '=acrc!$A$2:$A$' + str(1 + len(index)),
-        'values': '=acrc!$B$2:$B$' + str(1 + len(index)),
-        'marker':{'type': 'square', 'size' : 4},
-        'line':{'width': 1.25}
-        })
+        'values': '=acrc!$B$2:$B$' + str(1 + len(index))})
 
 acrcChart.add_series({
         'name': '=acrc!$C$1',
         'categories': '=acrc!$A$2:$A$' + str(1 + len(index)),
-        'values': '=acrc!$C$2:$C$' + str(1 + len(index)),
-        'marker':{'type': 'circle', 'size' : 4},
-        'line':{'width': 1.25}
-        })
-
-
-acrcChart.set_legend({'font': {'size':15, 'name':'Times New Roman', 'bold':True}})
-
-
-acrcChart.set_size({'width': 700, 'height': 370})
-
-#设置X轴
-acrcChart.set_x_axis({
-        'name': 'Period Number',
-        'name_font': {'size': 15, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 11, 'bold': True, 'name':'Times New Roman'},
-        'max': 310,
-        'min': 0
-                })
-#设置Y轴
-acrcChart.set_y_axis({
-        'name': 'Number of Requests',
-        'name_font': {'size': 15, 'bold': True, 'name':'Times New Roman'},
-        'num_font': {'size': 11, 'bold': True, 'name':'Times New Roman'}
-                })
+        'values': '=acrc!$C$2:$C$' + str(1 + len(index))})
 
 acrcRelativeError = calculateRelativeError(acrcCompareTuple)
 acrcQualified = calculateQualified(acrcCompareTuple)
@@ -336,8 +241,9 @@ acrcQualified = round(acrcQualified * 100, 2)
 
 print 'acrc: RelativeError: %f, Qualified: %f' % (acrcRelativeError, acrcQualified)
 
+acrcChart.set_size({'width': 1400, 'height': 800})
 
-#acrcChart.set_title({'name': 'acrc RelativeError:' + str(acrcRelativeError) + '% PassRate:' + str(acrcQualified) + '%'})
+acrcChart.set_title({'name': 'acrc RelativeError:' + str(acrcRelativeError) + '% PassRate:' + str(acrcQualified) + '%'})
 acrcSheet.insert_chart('E1', acrcChart)
 
 workbook.close()

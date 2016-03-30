@@ -16,6 +16,8 @@ from copy import deepcopy
 from NormalUtil import *
 from DBUtil.PerformanceDBUtil import PerformanceDBUtil
 from ACRCUtil.SLAHandler import SLAHandler
+import shelve
+from PredictUtil import *
 
 #dropCloudExDB()
 #createCloudExDB()
@@ -89,10 +91,10 @@ from ACRCUtil.SLAHandler import SLAHandler
 #PerformanceDBUtil.createPerformanceDataTable()
 
 
-#performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88, 'vmNumbers':3, 'shouldVMNumbers':2}
+#performanceData = {'minResponseTime':105.8, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88, 'vmNumbers':3, 'shouldVMNumbers':2, 'predictProvisionVMNumbers':2, 'reactiveProvisionVMNumbers':1}
 #PerformanceDBUtil.addPerformanceDataToSpecificPeriod(6, performanceData)
 
-#performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88, 'vmNumbers':5, 'shouldVMNumbers':2}
+#performanceData = {'minResponseTime':205.3, 'maxResponseTime':13.2, 'avgResponseTime':22.3, 'breakSLAPercent':0.2, 'avgCpuUtil':0.3, 'avgMemoryUtil':0.6, 'availability':0.88, 'vmNumbers':5, 'shouldVMNumbers':2, 'predictProvisionVMNumbers':2, 'reactiveProvisionVMNumbers':3}
 #PerformanceDBUtil.addPerformanceDataToSpecificPeriod(5, performanceData)
 
 #print PerformanceDBUtil.getPerformanceDataCount()
@@ -117,4 +119,10 @@ from ACRCUtil.SLAHandler import SLAHandler
 #TomcatInstanceUtil.createSpecifyNumberInstancesInAZ(1, 'az4')
 
 
-print WorkloadVMMapDBUtil.getTargetVMsToSpecificWorkload(120000)
+#print WorkloadVMMapDBUtil.getTargetVMsToSpecificWorkload(120000)
+
+
+hdDB = shelve.open(historyDataFile)
+print hdDB[dailyHistoryData]
+print hdDB[periodicHistoryData]
+print hdDB[acrcHistoryData]

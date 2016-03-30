@@ -120,6 +120,7 @@ def clearHistoryData():
     hdDB[dailyHistoryData] = []
     hdDB[periodicHistoryData] = []
     hdDB[acrcHistoryData] = []
+    hdDB[maHistoryData] = []
     hdDB.close()
 
 def addPWLToDailyWindow(predictWorkloadData):
@@ -218,6 +219,7 @@ def clearPredictData():
     pdDB[periodicPredictData] = []
     pdDB[statPredictData] = []
     pdDB[acrcPredictData] = []
+    pdDB[maPredictData] = []
     pdDB.close()
 
 def clearErrorData():

@@ -43,14 +43,23 @@ class ACRCProvisionComponent(ProvisionComponent):
             raise Exception('Can not get periodNo')
         WorkloadDBUtil.addPredictWorkloadToSpecificPeriod(periodNo, predictWL)
 
+        #记录供给的虚拟机数目的分布
+        provisionInfoDB = shelve.open(provisionInfoFile)
+
         #查询需要的VM
         predictVMNumbers = WorkloadVMMapDBUtil.getTargetVMsToSpecificWorkload(predictWL)
+
+        provisionInfoDB[predictProvisionVMNumbers] = predictVMNumbers
 
         logger.info('PredictWorkload:' + str(predictWL) + ' predictVMNumbers:' + str(predictVMNumbers))
 
         addedVMNumbers = self.ruleChecker.getNextAddedVMs()
 
+        provisionInfoDB[reactiveProvisionVMNumbers] = addedVMNumbers
+
         logger.info('addedVMNumbers:' + str(addedVMNumbers))
+
+        provisionInfoDB.close()
 
         nextPeriodVMNumbers = predictVMNumbers + addedVMNumbers
 

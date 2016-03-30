@@ -22,7 +22,9 @@ class PerformanceDBUtil(object):
                 avgMemoryUtil DOUBLE NOT NULL,
                 availability DOUBLE NOT NULL,
                 vmNumbers INT NOT NULL,
-                shouldVMNumbers INT NOT NULL
+                shouldVMNumbers INT NOT NULL,
+                predictProvisionVMNumbers INT NOT NULL,
+                reactiveProvisionVMNumbers INT NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ''' % performanceDataTableName
         dbcur = dbcon.cursor()
@@ -38,9 +40,9 @@ class PerformanceDBUtil(object):
 
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
-            INSERT INTO %s(periodNo, minResponseTime, maxResponseTime, avgResponseTime, avgCpuUtil, avgMemoryUtil, breakSLAPercent, availability, vmNumbers, shouldVMNumbers)
-            VALUES(%d, %f, %f, %f, %f, %f, %f, %f, %d, %d);
-        ''' % (performanceDataTableName, periodNo, performanceData['minResponseTime'], performanceData['maxResponseTime'], performanceData['avgResponseTime'], performanceData['avgCpuUtil'], performanceData['avgMemoryUtil'], performanceData['breakSLAPercent'], performanceData['availability'], performanceData['vmNumbers'], performanceData['shouldVMNumbers'])
+            INSERT INTO %s(periodNo, minResponseTime, maxResponseTime, avgResponseTime, avgCpuUtil, avgMemoryUtil, breakSLAPercent, availability, vmNumbers, shouldVMNumbers, predictProvisionVMNumbers, reactiveProvisionVMNumbers)
+            VALUES(%d, %f, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d);
+        ''' % (performanceDataTableName, periodNo, performanceData['minResponseTime'], performanceData['maxResponseTime'], performanceData['avgResponseTime'], performanceData['avgCpuUtil'], performanceData['avgMemoryUtil'], performanceData['breakSLAPercent'], performanceData['availability'], performanceData['vmNumbers'], performanceData['shouldVMNumbers'], performanceData['predictProvisionVMNumbers'], performanceData['reactiveProvisionVMNumbers'])
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()

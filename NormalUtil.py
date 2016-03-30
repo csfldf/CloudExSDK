@@ -6,6 +6,9 @@ import re
 periodRecoderFile = '/home/sk/image/cloudExData/periodRecoder.db'
 periodRecoder = 'PERIODRECODER'
 
+provisionInfoFile = '/home/sk/image/cloudExData/provisionInfo.db'
+predictProvisionVMNumbers = 'PPVMN'
+reactiveProvisionVMNumbers = 'RPVMN'
 
 def isNumber(strToTest):
     pattern = r'^\d+$'
