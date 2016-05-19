@@ -29,6 +29,32 @@ errorParamDataFile = '/home/sk/image/cloudExData/errorParam.db'
 errorParamData = 'ERRORPARAMDATA'
 errorParamWindowSize = periodicHistoryWindowSize
 
+utilHistoryDataFile = '/home/sk/image/cloudExData/utilData.db'
+pmCPUUtilHistoryData = 'PMCPUUTILHISTORYDATA'
+vmCPUUtilHistoryData = 'VMCPUUTILHISTORYDATA'
+
+utilPredictDataFile = '/home/sk/image/cloudExData/predictUtil.db'
+pmCPUUtilPredictData = 'PMCPUUTILPREDICTDATA'
+vmCPUUtilPredictData = 'VMCPUUTILPREDICTDATA'
+
+utilErrorDataFile = '/home/sk/image/cloudExData/utilErrorData.db'
+pmCPUUtilErrorData = 'PMCPUUTILERRORDATA'
+vmCPUUtilErrorData = 'VMCPUUTILERRORDATA'
+
+
+
+def addWLToPeriodicWindow(workloadData):
+    hdDB = shelve.open(historyDataFile)
+    periodicHD = hdDB.get(periodicHistoryData, None)
+
+    if not periodicHD:
+        periodicHD = [workloadData]
+    else:
+        addDataToWindow(periodicHD, workloadData, periodicHistoryWindowSize)
+
+    hdDB[periodicHistoryData] = periodicHD
+    hdDB.close()
+
 def addDataToWindow(targetList, newData, windowSize):
     windowLen = len(targetList)
     if windowLen == windowSize:
@@ -73,6 +99,37 @@ def addWLToPeriodicWindow(workloadData):
 
     hdDB[periodicHistoryData] = periodicHD
     hdDB.close()
+
+
+def addPMCPUUtilToPeriodicWindow(pmId, pmCPUUtil):
+    utilDB = shelve.open(utilHistoryDataFile)
+    pmCPUUtilHD = utilDB.get(pmCPUUtilHistoryData, None)
+
+    if not pmCPUUtilHD:
+        pmCPUUtilHD = {}
+
+    if pmId not in pmCPUUtilHD:
+        pmCPUUtilHD[pmId] = [pmCPUUtil]
+    else:
+        addDataToWindow(pmCPUUtilHD[pmId], pmCPUUtil, periodicHistoryWindowSize)
+
+    utilDB[pmCPUUtilHistoryData] = pmCPUUtilHD
+    utilDB.close()
+
+def addVMCPUUtilToPeriodicWindow(vmIP, vmCPUUtil):
+    utilDB = shelve.open(utilHistoryDataFile)
+    vmCPUUtilHD = utilDB.get(vmCPUUtilHistoryData, None)
+
+    if not vmCPUUtilHD:
+        vmCPUUtilHD = {}
+
+    if vmIP not in vmCPUUtilHD:
+        vmCPUUtilHD[vmIP] = [vmCPUUtil]
+    else:
+        addDataToWindow(vmCPUUtilHD[vmIP], vmCPUUtil, periodicHistoryWindowSize)
+
+    utilDB[vmCPUUtilHistoryData] = vmCPUUtilHD
+    utilDB.close()
 
 
 def addWLToMAWindow(workloadData):
@@ -123,6 +180,11 @@ def clearHistoryData():
     hdDB[maHistoryData] = []
     hdDB.close()
 
+    utilhdDB = shelve.open(utilHistoryDataFile)
+    utilhdDB[pmCPUUtilHistoryData] = {}
+    utilhdDB[vmCPUUtilHistoryData] = {}
+    utilhdDB.close()
+
 def addPWLToDailyWindow(predictWorkloadData):
     if not predictWorkloadData:
         raise Exception('no predictWorkloadData pass in function addPredictWorkload!')
@@ -152,7 +214,38 @@ def addPWLToPeriodicWindow(predictWorkloadData):
     pdDB.close()
 
 
+def addPredictPMCPUUtilToPeriodicWindow(pmId, pv):
+    if not pmId or not pv:
+        raise Exception('no predictData or pmId pass in function addPredictWorkload!')
+    pdDB = shelve.open(utilPredictDataFile)
+    ppmutilData = pdDB.get(pmCPUUtilPredictData, None)
+
+    if not ppmutilData or pmId not in ppmutilData:
+        ppmutilData[pmId] = [firstPeriodPredictData, pv]
+    else:
+        addDataToWindow(ppmutilData[pmId], pv, periodicPredictWindowSize)
+
+    pdDB[pmCPUUtilPredictData] = ppmutilData
+    pdDB.close()
+
+
+def addPredictVMCPUUtilToPeriodicWindow(vmIP, pv):
+    if not vmIP or not pv:
+        raise Exception('no predictData or vmIP pass in function addPredictWorkload!')
+    pdDB = shelve.open(utilPredictDataFile)
+    pvmutilData = pdDB.get(vmCPUUtilPredictData, None)
+
+    if not pvmutilData or vmIP not in pvmutilData:
+        pvmutilData[vmIP] = [firstPeriodPredictData, pv]
+    else:
+        addDataToWindow(pvmutilData[vmIP], pv, periodicPredictWindowSize)
+
+    pdDB[vmCPUUtilPredictData] = pvmutilData
+    pdDB.close()
+
+
 def addPWLToMAWindow(predictWorkloadData):
+    utilhdDB.close()
     if not predictWorkloadData:
         raise Exception('no predictWorkloadData pass in function addPredictWorkload!')
     pdDB = shelve.open(predictDataFile)
@@ -222,10 +315,20 @@ def clearPredictData():
     pdDB[maPredictData] = []
     pdDB.close()
 
+    utilpdDB = shelve.open(utilPredictDataFile)
+    utilpdDB[pmCPUUtilPredictData] = {}
+    utilpdDB[vmCPUUtilPredictData] = {}
+    utilpdDB.close()
+
 def clearErrorData():
     edDB = shelve.open(errorParamDataFile)
     edDB[errorParamData] = []
     edDB.close()
+
+    utiledDB = shelve.open(utilErrorDataFile)
+    utiledDB[pmCPUUtilErrorData] = {}
+    utiledDB[vmCPUUtilErrorData] = {}
+    utiledDB.close()
 
 
 def clearAllData():
@@ -253,6 +356,9 @@ def MAUtil(targetList):
     sumL = sum(targetList)
     tlen = len(targetList)
     return sumL / tlen + 1
+
+def MAUtilForUtil(targetList):
+    return sum(targetList) / len(targetList)
 
 def calculateRelativeError(compareList):
     realWorkloadSum = 0

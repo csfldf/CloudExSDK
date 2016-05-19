@@ -6,7 +6,7 @@ from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 from opsdkUtil.getClientUtil import GetClientUtil
 from NovaUtil.FlavorUtil import FlavorUtil
 from NovaUtil.InstanceUtil import InstanceUtil
-
+from DBUtil.UsingInstancesDBUtil import UsingInstancesDBUtil
 #nova = GetClientUtil.getNovaClient()
 #instance = nova.servers.list(search_opts = {'name':'sjyvm-1'})
 #print instance
@@ -16,7 +16,10 @@ from NovaUtil.InstanceUtil import InstanceUtil
 #print nova.servers.ips(nova)
 #instance = TomcatInstanceUtil.createTomcatInstance()
 
-instance = InstanceUtil.findInstaceByName('sjyvm-e2c9f0ce-b8fd-11e5-9899-00e04c680ae0')
+#instance = InstanceUtil.findInstaceByName('sjyvm-e2c9f0ce-b8fd-11e5-9899-00e04c680ae0')
 #instance = InstanceUtil.findInstanceById('3c366418-8a4e-440a-b474-cf4dacd5e6c3')
 #print dir(instance)
-print instance.availability-zone
+#print instance.availability-zone
+
+
+print TomcatInstanceUtil.migrate('34223c71-33b5-4616-a818-2027812dc83b', 'az4')

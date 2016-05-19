@@ -8,11 +8,12 @@ from NovaUtil.InstanceUtil import InstanceUtil
 from opsdkUtil.getClientUtil import GetClientUtil
 from uuid import uuid1 as genUUID
 import time
+import sys
 
 instanceNamePrefix = 'sjyvm-'
 flavorName = 'm1.small'
 imageName = 'svTomcat'
-
+netId = 'c750c1d8-830b-4b2d-8d84-93b6163f1753'
 
 class TomcatInstanceUtil(object):
     @staticmethod
@@ -30,15 +31,58 @@ class TomcatInstanceUtil(object):
         return str(uuidObj)
 
     @staticmethod
-    def createTomcatInstance(azName = ''):
+    def migrate(vmId, azName):
+        if not vmId or not azName:
+            return False
+
+        nova = GetClientUtil.getNovaClient()
+        targetInstance = InstanceUtil.findInstanceById(vmId)
+        ips = nova.servers.ips(targetInstance.id)
+        innerIP = TomcatInstanceUtil.getInnerIPFromIPInfo(ips)
+
+        targetInstance.delete()
+
+        oldStdout = sys.stdout
+        nullFile = open('/dev/null', 'w')
+        sys.stdout = nullFile
+
+        while InstanceUtil.findInstanceById(vmId):
+            time.sleep(2)
+
+        sys.stdout = oldStdout
+        nullFile.close()
+
+        UsingInstancesDBUtil.deleteUsingInstanceByResourceId(targetInstance.id)
+
+        newInstance = TomcatInstanceUtil.createTomcatInstance(azName, innerIP)
+
+        if newInstance:
+            while not InstanceUtil.isInstanceStatusActice(newInstance.id):
+                time.sleep(2)
+            return True
+        else:
+            return False
+
+
+
+
+    @staticmethod
+    def createTomcatInstance(azName = '', fixedIp = ''):
         nova = GetClientUtil.getNovaClient()
         targetInstanceName = instanceNamePrefix + TomcatInstanceUtil.getUUIDStr()
         targetImage = ImageUtil.findImageByName(imageName)
         targetFlavor = FlavorUtil.findFlavorByName(flavorName)
         if azName:
-            targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, availability_zone=azName)
+            if fixedIp:
+                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, availability_zone=azName, nics=[{'net-id':netId, 'v4-fixed-ip':fixedIp}])
+            else:
+                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, availability_zone=azName, nics=[{'net-id':netId}])
+
         else:
-            targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor)
+            if fixedIp:
+                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, nics=[{'net-id':netId, 'v4-fixed-ip':fixedIp}])
+            else:
+                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, nics=[{'net-id':netId}])
 
         #print targetInstance.name
         ips = nova.servers.ips(targetInstance.id)
