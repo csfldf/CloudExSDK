@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import sys
 from DBUtil import *
 
 workloadTableName = 'WorkloadData'
@@ -15,7 +16,9 @@ class WorkloadDBUtil(object):
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 periodNo INT UNIQUE NOT NULL,
                 realWL INT,
-                predictWL INT
+                predictWL INT,
+                realTC DOUBLE,
+                predictTC DOUBLE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         ''' % workloadTableName
         dbcur = dbcon.cursor()
@@ -25,16 +28,16 @@ class WorkloadDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def addRealWorkloadToSpecificPeriod(periodNo, realWL):
+    def addRealWorkloadAndRealTotalCalculationToSpecificPeriod(periodNo, realWL, realTC):
         if not periodNo or not realWL:
             raise Exception('no periodNo or real workload')
 
         dbcon = getDBConwithCloudExDB()
         updateStat = '''
             UPDATE %s
-            SET realWL = %d
+            SET realWL = %d, realTC = %f
             WHERE periodNo = %d
-        ''' % (workloadTableName, realWL, periodNo)
+        ''' % (workloadTableName, realWL, realTC, periodNo)
         dbcur = dbcon.cursor()
         afl = dbcur.execute(updateStat)
         dbcur.close()
@@ -44,15 +47,15 @@ class WorkloadDBUtil(object):
             raise Exception("add real workload to period that wasn't been predicted")
 
     @staticmethod
-    def addFirstPeriodRealWorkload(realWL):
+    def addFirstPeriodRealWorkloadAndRealTotalCalculation(realWL, realTC):
         if not realWL:
             raise Exception('no periodNo or real workload')
 
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
-            INSERT INTO %s(periodNo, realWL, predictWL)
-            VALUES(%d, %d, %d);
-        ''' % (workloadTableName, 1, realWL, -1)
+            INSERT INTO %s(periodNo, realWL, predictWL, realTC, predictTC)
+            VALUES(%d, %d, %d, %f, %f);
+        ''' % (workloadTableName, 1, realWL, -1, realTC, -1.0)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
@@ -60,15 +63,15 @@ class WorkloadDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def addPredictWorkloadToSpecificPeriod(periodNo, predictWL):
+    def addPredictWorkloadAndPredictTotalCalculationToSpecificPeriod(periodNo, predictWL, predictTC):
         if not periodNo or not predictWL:
             raise Exception('no periodNo or predict workload')
 
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
-            INSERT INTO %s(periodNo, predictWL)
-            VALUES(%d, %d);
-        ''' % (workloadTableName, periodNo, predictWL)
+            INSERT INTO %s(periodNo, predictWL, predictTC)
+            VALUES(%d, %d, %f);
+        ''' % (workloadTableName, periodNo, predictWL, predictTC)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
         dbcur.close()
@@ -147,5 +150,34 @@ class WorkloadDBUtil(object):
         dbcon.close()
         if wl:
             return {'periodNo':wl[0], 'realWL':wl[1]}
+        else:
+            return None
+
+    @staticmethod
+    def getRealWorkloadAndRealTotalCalculationInPairs(windowSize=sys.maxint):
+        # result is sorted by RealWorkload, which might have effect on the result of linear regression done by np
+        dbcon = getDBConwithCloudExDB()
+        selectStat = '''
+            SELECT realWL, realTC
+            FROM %s
+            ORDER BY periodNo DESC
+            LIMIT %d
+        ''' % (workloadTableName, workloadTableName, windowSize)
+        dbcur = dbcon.cursor()
+        dbcur.execute(selectStat)
+        tmp = []
+        for pair in dbcur:
+            tmp.append((pair[0], pair[1]))
+        dbcur.close()
+        dbcon.close()
+
+        if tmp.__len__() > 0:
+            tmp.sort(lambda x, y: cmp(x[0], y[0]))
+            wl = []
+            tc = []
+            for i in tmp:
+                wl.append(i[0])
+                tc.append(i[1])
+            return [wl, tc]
         else:
             return None

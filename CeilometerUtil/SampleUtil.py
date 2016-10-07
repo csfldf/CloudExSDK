@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+import urllib2
 
 from opsdkUtil.getClientUtil import GetClientUtil
 from NormalUtil import *
@@ -27,6 +28,18 @@ class SampleUtil(object):
             memoryUtil = muSample.volume / float(memoryAmount) * 100
             retValueList.append(round(memoryUtil, 2))
         return retValueList
+
+    @staticmethod
+    def getThreadInfoByResourceId(resourceId, jumper_server):
+        innerIP = UsingInstancesDBUtil.getInnerIPByResourceId(resourceId)
+        url = jumper_server + "/getSpecificThreadInfo?ip=" + str(innerIP)
+        req = urllib2.Request(url)
+        # TODO: retry mechanism might be added later
+        infos = eval(urllib2.urlopen(req).read())
+        # here simplify the model since our instance must has single cpu
+        freq = infos[0][2]  # format => [[thread, freqStandard, freqReal]...]
+        util = SampleUtil.getCpuUtilPeriodAVGByResourceId(resourceId)
+        return {"cal": 1.0 * freq * util, "util": util}
 
     @staticmethod
     def getMemoryUtilPeriodAVGByResourceId(resourceId):
@@ -72,3 +85,19 @@ class SampleUtil(object):
         else:
             return None
 
+    @staticmethod
+    def getThreadInfosOverAllUsingInstances(jump_server):
+        allUiIds = UsingInstancesDBUtil.getAllUsingInstancesIds()
+
+        uiAvgCPUList = []
+        totalCalculation = 0.0
+
+        for uiId in allUiIds:
+            tmp = SampleUtil.getThreadInfoByResourceId(uiId, jump_server)
+            uiAvgCPUList.append(tmp["util"])
+            totalCalculation += tmp["cal"]
+
+        if uiAvgCPUList:
+            return avgNumberList(uiAvgCPUList), totalCalculation
+        else:
+            return None

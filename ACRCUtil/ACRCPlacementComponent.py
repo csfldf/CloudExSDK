@@ -127,6 +127,8 @@ class ACRCPlacementComponent(PlacementComponent):
         for azn in azNameList:
             az = self.findNewAZWithAZName(azn)
             if az.holdVMs:
+                # No matter the result is true or false, the structure of the TopoTree has been changed after
+                # this function call, so following updateCloudInfo() should be invoked anyway.
                 if self.canScaleDownOnlyVMInAZOrNot(az):
                     logger.debug('scale down the only vm in ' + az.name)
                     TomcatInstanceUtil.deleteSpecifyNumberInstancesWithSpecifyAZ(1, az.name)

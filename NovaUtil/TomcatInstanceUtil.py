@@ -10,10 +10,14 @@ from uuid import uuid1 as genUUID
 import time
 import sys
 
+# TODO: all these parameters might be moved to a config file instead
 instanceNamePrefix = 'sjyvm-'
 flavorName = 'm1.small'
+# TODO: should be replaced later
+calculationCapacity = 1000.0
 imageName = 'svTomcat'
 netId = 'c750c1d8-830b-4b2d-8d84-93b6163f1753'
+
 
 class TomcatInstanceUtil(object):
     @staticmethod
@@ -63,32 +67,34 @@ class TomcatInstanceUtil(object):
         else:
             return False
 
-
-
-
     @staticmethod
-    def createTomcatInstance(azName = '', fixedIp = ''):
+    def createTomcatInstance(azName='', fixedIp=''):
         nova = GetClientUtil.getNovaClient()
         targetInstanceName = instanceNamePrefix + TomcatInstanceUtil.getUUIDStr()
         targetImage = ImageUtil.findImageByName(imageName)
         targetFlavor = FlavorUtil.findFlavorByName(flavorName)
         if azName:
             if fixedIp:
-                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, availability_zone=azName, nics=[{'net-id':netId, 'v4-fixed-ip':fixedIp}])
+                targetInstance = nova.servers.create(targetInstanceName, targetImage, targetFlavor,
+                                                     availability_zone=azName,
+                                                     nics=[{'net-id': netId, 'v4-fixed-ip': fixedIp}])
             else:
-                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, availability_zone=azName, nics=[{'net-id':netId}])
+                targetInstance = nova.servers.create(targetInstanceName, targetImage, targetFlavor,
+                                                     availability_zone=azName, nics=[{'net-id': netId}])
 
         else:
             if fixedIp:
-                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, nics=[{'net-id':netId, 'v4-fixed-ip':fixedIp}])
+                targetInstance = nova.servers.create(targetInstanceName, targetImage, targetFlavor,
+                                                     nics=[{'net-id': netId, 'v4-fixed-ip': fixedIp}])
             else:
-                targetInstance =  nova.servers.create(targetInstanceName, targetImage, targetFlavor, nics=[{'net-id':netId}])
+                targetInstance = nova.servers.create(targetInstanceName, targetImage, targetFlavor,
+                                                     nics=[{'net-id': netId}])
 
-        #print targetInstance.name
+        # print targetInstance.name
         ips = nova.servers.ips(targetInstance.id)
         while not ips:
             ips = nova.servers.ips(targetInstance.id)
-        #print ips
+        # print ips
         innerIP = TomcatInstanceUtil.getInnerIPFromIPInfo(ips)
 
         count = 0
@@ -143,7 +149,8 @@ class TomcatInstanceUtil(object):
         holdVms = UsingInstancesDBUtil.getUsingInstancesByAZName(azName)
         holdVmsLen = len(holdVms)
         if no > holdVmsLen:
-            raise Exception('Could not down ' + str(no) + ' vms in ' + str(azName) + ', it only has ' + str(holdVmsLen) + ' vms!')
+            raise Exception(
+                'Could not down ' + str(no) + ' vms in ' + str(azName) + ', it only has ' + str(holdVmsLen) + ' vms!')
 
         nova = GetClientUtil.getNovaClient()
 
@@ -179,3 +186,6 @@ class TomcatInstanceUtil(object):
                     usingInstancesIds.remove(uiid)
             time.sleep(5)
 
+    @staticmethod
+    def getCalculationCapacityPerInstance():
+        return calculationCapacity
