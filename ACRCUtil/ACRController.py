@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from ACRCUtil.EACRCProvisionComponent import EACRCProvisionComponent
+from ACRCUtil.eACRCProvisionComponent import EACRCProvisionComponent
 from ACRCUtil.ACRCPlacementComponent import ACRCPlacementComponent
 from NovaUtil.TomcatInstanceUtil import TomcatInstanceUtil
 
