@@ -27,7 +27,7 @@ class PMCPUDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def addRealPMCPUToSpecificPeriod(periodNo, realPMCPU):
+    def addRealPMCPUToSpecificPeriod(periodNo, tarId, realPMCPU):
         if not periodNo or not realPMCPU:
             raise Exception('no periodNo or real pm util')
 
@@ -35,8 +35,8 @@ class PMCPUDBUtil(object):
         updateStat = '''
             UPDATE %s
             SET realUtil = %lf
-            WHERE periodNo = %d
-        ''' % (PMCPUTableName, realPMCPU, periodNo)
+            WHERE periodNo = %d AND pmId = '%s'
+        ''' % (PMCPUTableName, realPMCPU, periodNo, tarId)
         dbcur = dbcon.cursor()
         afl = dbcur.execute(updateStat)
         dbcur.close()
@@ -53,7 +53,7 @@ class PMCPUDBUtil(object):
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
             INSERT INTO %s(periodNo, realUtil, predictUtil, pmId)
-            VALUES(%d, %d, %d, '%s');
+            VALUES(%d, %lf, %lf, '%s');
         ''' % (PMCPUTableName, 1, realPMCPU, -1, pmId)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
@@ -69,7 +69,7 @@ class PMCPUDBUtil(object):
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
             INSERT INTO %s(periodNo, predictUtil, pmId)
-            VALUES(%d, %d, '%s');
+            VALUES(%d, %lf, '%s');
         ''' % (PMCPUTableName, periodNo, predictPMCPU, pmId)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)

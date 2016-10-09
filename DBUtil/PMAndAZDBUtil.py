@@ -159,8 +159,27 @@ class PMAndAZDBUtil(object):
         else:
             return True
 
+    @staticmethod
+    def getInnerIPByPMId(tarId):
+        dbcon = getDBConwithCloudExDB()
+        selectStat = '''
+            SELECT innerIP
+            FROM %s
+            WHERE id = '%s'
+        ''' % (pmAndAZTableName, tarId)
 
+        dbcur = dbcon.cursor()
+        affectedRow = dbcur.execute(selectStat)
 
+        res = dbcur.fetchone()
+
+        dbcur.close()
+        dbcon.close()
+
+        if affectedRow == 0:
+            return None
+        else:
+            return res[0]
 
 
 
@@ -171,4 +190,8 @@ if __name__ == '__main__':
     #PMAndAZDBUtil.modifyUpperThreshold('05aa91c8-1a8f-11e6-a93b-00e04c680ae0', 80.0)
     #PMAndAZDBUtil.modifyLowerThreshold('05aa91c8-1a8f-11e6-a93b-00e04c680ae0', 20.0)
     #print PMAndAZDBUtil.isPMId('05add7fc-1a8f-11e6-a93b-00e04c680ae0')
-    print PMAndAZDBUtil.getAZNameByResourceId('05add7fc-1a8f-11e6-a93b-00e04c680ae0')
+    #print PMAndAZDBUtil.getAZNameByResourceId('05add7fc-1a8f-11e6-a93b-00e04c680ae0')
+    #print  PMAndAZDBUtil.getInnerIPByPMId('aa')
+    PMAndAZDBUtil.addPMAndAZ(str(genUUID()), 'ubuntu-50', '192.168.0.50', 'az5', 80.0, 20.0)
+    #PMAndAZDBUtil.modifyUpperThreshold('05add7fc-1a8f-11e6-a93b-00e04c680ae0', 60)
+    #PMAndAZDBUtil.modifyLowerThreshold('05add7fc-1a8f-11e6-a93b-00e04c680ae0', 30)

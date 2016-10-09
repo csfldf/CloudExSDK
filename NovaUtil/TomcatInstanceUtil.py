@@ -12,7 +12,8 @@ import sys
 
 instanceNamePrefix = 'sjyvm-'
 flavorName = 'm1.small'
-imageName = 'svTomcat'
+#imageName = 'svTomcat'
+imageName = 'consolidationTem'
 netId = 'c750c1d8-830b-4b2d-8d84-93b6163f1753'
 
 class TomcatInstanceUtil(object):

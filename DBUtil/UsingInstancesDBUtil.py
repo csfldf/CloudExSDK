@@ -135,3 +135,26 @@ class UsingInstancesDBUtil(object):
         dbcur.close()
         dbcon.close()
         return vmList
+
+    @staticmethod
+    def getUsingInstanceInnerIPById(resourceId):
+        dbcon = getDBConwithCloudExDB()
+        selectStat = '''
+            SELECT innerIP
+            FROM %s
+            WHERE resourceId = '%s'
+        ''' % (usingInstancesTableName, resourceId)
+
+        dbcur = dbcon.cursor()
+        affectedRow = dbcur.execute(selectStat)
+        tarUI = dbcur.fetchone()
+        dbcur.close()
+        dbcon.close()
+
+        if affectedRow == 0:
+            return None
+        else:
+            return tarUI[0]
+
+if __name__ == '__main__':
+    print UsingInstancesDBUtil.getUsingInstanceInnerIPById('4d624fa1-7d5c-466b-b17d-99d0e4bf47a8')

@@ -72,3 +72,5 @@ class SampleUtil(object):
         else:
             return None
 
+if __name__ == '__main__':
+    print SampleUtil.getCpuUtilPeriodAVGByResourceId('04308070-a7a9-406d-bd91-107883e62a3c')

@@ -26,7 +26,7 @@ class VMCPUDBUtil(object):
         dbcon.close()
 
     @staticmethod
-    def addRealVMCPUToSpecificPeriod(periodNo, realVMCPU):
+    def addRealVMCPUToSpecificPeriod(periodNo, realVMCPU, vmIP):
         if not periodNo or not realVMCPU:
             raise Exception('no periodNo or real pm util')
 
@@ -34,8 +34,8 @@ class VMCPUDBUtil(object):
         updateStat = '''
             UPDATE %s
             SET realUtil = %lf
-            WHERE periodNo = %d
-        ''' % (VMCPUTableName, realVMCPU, periodNo)
+            WHERE periodNo = %d AND vmIP = '%s'
+        ''' % (VMCPUTableName, realVMCPU, periodNo, vmIP)
         dbcur = dbcon.cursor()
         afl = dbcur.execute(updateStat)
         dbcur.close()
@@ -52,7 +52,7 @@ class VMCPUDBUtil(object):
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
             INSERT INTO %s(periodNo, realUtil, predictUtil, vmIP)
-            VALUES(%d, %d, %d, '%s');
+            VALUES(%d, %lf, %lf, '%s');
         ''' % (VMCPUTableName, 1, realVMCPU, -1, vmIP)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)
@@ -68,7 +68,7 @@ class VMCPUDBUtil(object):
         dbcon = getDBConwithCloudExDB()
         insertStat = '''
             INSERT INTO %s(periodNo, predictUtil, vmIP)
-            VALUES(%d, %d, '%s');
+            VALUES(%d, %lf, '%s');
         ''' % (VMCPUTableName, periodNo, predictVMCPU, vmIP)
         dbcur = dbcon.cursor()
         dbcur.execute(insertStat)

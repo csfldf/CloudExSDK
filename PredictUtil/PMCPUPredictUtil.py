@@ -4,6 +4,9 @@
 import shelve
 from PredictUtil import *
 from PredictUtil.BasePredictUtil import BasePredictUtil
+from LoggingUtil import getLogUtil
+
+cpuLogger = getLogUtil('VMOrPMCPUUtilPredict')
 
 class PMCPUPredictUtil(BasePredictUtil):
     #errorRatio在上一个周期的错误和之前的错误的平均值两者之间加权算错误用
@@ -23,6 +26,8 @@ class PMCPUPredictUtil(BasePredictUtil):
         epd = edDB.get(pmCPUUtilErrorData, None)
 
         #print ppd, epd
+
+        cpuLogger.info('pmId:' + pmId + ' epd:' + str(epd) + ' ppd:' + str(ppd))
 
         if not ppd or not epd or pmId not in ppd or pmId not in epd:
             raise Exception('no predictData or not epd!')
@@ -44,7 +49,11 @@ class PMCPUPredictUtil(BasePredictUtil):
         edDB[pmCPUUtilErrorData] = epd
 
         maxE = max(epd[pmId])
-        B = 1 - newE / maxE
+
+        if maxE == 0:
+            B = 0
+        else:
+            B = 1 - newE / maxE
 
         pdDB.close()
         edDB.close()
@@ -119,8 +128,10 @@ class PMCPUPredictUtil(BasePredictUtil):
 
             edDB = shelve.open(utilErrorDataFile)
             edpd = [self.errorRatio * abs(self.historyData[pmId][1] - ppd[pmId][1])]
-            #print edDB[pmCPUUtilErrorData]
-            edDB[pmCPUUtilErrorData] = {pmId: edpd}
+
+            prev = edDB[pmCPUUtilErrorData]
+            prev[pmId] = edpd
+            edDB[pmCPUUtilErrorData] = prev
             edDB.close()
             pdDB.close()
             originPWL = MAUtilForUtil(self.historyData[pmId])
@@ -137,3 +148,4 @@ class PMCPUPredictUtil(BasePredictUtil):
             originPWL = (1 - B) * self.historyData[pmId][hdLen - 1] + B * totalAVG
         #差这个！！
         return self.adjustByAnalyseError(pmId, originPWL)
+
