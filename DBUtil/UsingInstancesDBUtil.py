@@ -85,6 +85,22 @@ class UsingInstancesDBUtil(object):
         dbcon.close()
         return uiInfoList
 
+    @staticmethod
+    def getInnerIPByResourceId(resourceId):
+        dbcon = getDBConwithCloudExDB()
+        selectStat = '''
+                SELECT innerIP
+                WHERE resourcdId='%s'
+                FROM %s
+            ''' % (resourceId, usingInstancesTableName)
+        dbcur = dbcon.cursor()
+        dbcur.execute(selectStat)
+        # TODO: not for sure about the format of this query, assure it later
+        IP = dbcur.fetchone()
+        dbcur.close()
+        dbcon.close()
+        return IP[0]
+
 
     @staticmethod
     def getAllUsingInstancesIds():
