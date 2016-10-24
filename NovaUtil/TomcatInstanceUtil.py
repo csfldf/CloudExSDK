@@ -16,7 +16,7 @@ flavorName = 'm1.small'
 #imageName = 'svTomcat'
 imageName = 'consolidationTem'
 # TODO: should be replaced later
-calculationCapacity = 1000.0
+calculationCapacity = 1800.0
 netId = 'c750c1d8-830b-4b2d-8d84-93b6163f1753'
 
 
