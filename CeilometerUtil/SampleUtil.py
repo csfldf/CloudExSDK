@@ -31,7 +31,7 @@ class SampleUtil(object):
 
     @staticmethod
     def getThreadInfoByResourceId(resourceId, jumper_server):
-        innerIP = UsingInstancesDBUtil.getInnerIPByResourceId(resourceId)
+        innerIP = UsingInstancesDBUtil.getUsingInstanceInnerIPById(resourceId)
         url = jumper_server + "/getSpecificThreadInfo?ip=" + str(innerIP)
         req = urllib2.Request(url)
         # TODO: retry mechanism might be added later
