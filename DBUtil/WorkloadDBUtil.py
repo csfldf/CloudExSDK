@@ -162,7 +162,7 @@ class WorkloadDBUtil(object):
             FROM %s
             ORDER BY periodNo DESC
             LIMIT %d
-        ''' % (workloadTableName, workloadTableName, windowSize)
+        ''' % (workloadTableName, int(windowSize))
         dbcur = dbcon.cursor()
         dbcur.execute(selectStat)
         tmp = []
