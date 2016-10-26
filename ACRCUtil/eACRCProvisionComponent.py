@@ -50,7 +50,14 @@ class EACRCProvisionComponent(ProvisionComponent):
         regression = np.polyfit(wl, tc, 1)
         k = float(regression[0])
         b = float(regression[1])
-        predictTC = k * predictWL + b
+
+        if k < 0:
+            # actually k should be positive, here to eliminate corner case when there's not much log
+            new_k = tc[-1] / wl[-1]
+            logger.warning("k = " + str(k) + " is negative, using k = " + str(new_k) + " instead")
+            predictTC = new_k * predictWL
+        else:
+            predictTC = k * predictWL + b
 
         WorkloadDBUtil.addPredictWorkloadAndPredictTotalCalculationToSpecificPeriod(periodNo, predictWL, predictTC)
 
