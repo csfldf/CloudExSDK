@@ -78,8 +78,12 @@ class EACRCProvisionComponent(ProvisionComponent):
         gab = abs(usingInstancesCount - nextPeriodVMNumbers)
 
         if usingInstancesCount > nextPeriodVMNumbers:
-            return {'vmNumbers': gab, 'isUp': False}
+            rt = {'vmNumbers': gab, 'isUp': False}
         elif usingInstancesCount < nextPeriodVMNumbers:
-            return {'vmNumbers': gab, 'isUp': True}
+            rt = {'vmNumbers': gab, 'isUp': True}
         else:
-            return {'vmNumbers': gab}
+            rt = {'vmNumbers': gab}
+
+        logger.info('return with:' + str(rt))
+
+        return rt
