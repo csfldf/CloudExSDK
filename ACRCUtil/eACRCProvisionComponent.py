@@ -58,7 +58,7 @@ class EACRCProvisionComponent(ProvisionComponent):
             b = 0
             logger.warning("using k = " + str(k) + " b = 0 instead")
 
-        predictVMNumbers = int(math.ceil(k * predictWL / (TomcatInstanceUtil.getCalculationCapacityPerInstance() - b)))
+        predictVMNumbers = math.ceil(k * predictWL / (TomcatInstanceUtil.getCalculationCapacityPerInstance() - b))
 
         predictTC = k * predictWL + predictVMNumbers * b
 

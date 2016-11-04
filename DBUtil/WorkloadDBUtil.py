@@ -3,6 +3,7 @@
 
 import sys
 from DBUtil import *
+from DBUtil import PerformanceDBUtil
 
 workloadTableName = 'WorkloadData'
 
@@ -158,11 +159,14 @@ class WorkloadDBUtil(object):
         # result is sorted by RealWorkload, which might have effect on the result of linear regression done by np
         dbcon = getDBConwithCloudExDB()
         selectStat = '''
-            SELECT realWL, realTC
-            FROM %s
-            ORDER BY periodNo DESC
+            SELECT realWL/vmNumbers, realTC/vmNumbers
+            FROM %s JOIN %s
+            WHERE %s.periodNo = %s.periodNo
+            ORDER BY %s.periodNo DESC
             LIMIT %d
-        ''' % (workloadTableName, int(windowSize))
+        ''' % (workloadTableName, PerformanceDBUtil.performanceDataTableName,
+               workloadTableName, PerformanceDBUtil.performanceDataTableName,
+               workloadTableName, int(windowSize))
         dbcur = dbcon.cursor()
         dbcur.execute(selectStat)
         tmp = []
