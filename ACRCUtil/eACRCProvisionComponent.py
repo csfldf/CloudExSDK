@@ -51,9 +51,9 @@ class EACRCProvisionComponent(ProvisionComponent):
         k = float(regression[0])
         b = float(regression[1])
 
-        if k < 0:
+        if k < 0 or wl.__len__() == 1:
             # actually k should be positive, here to eliminate corner case when there's not much log
-            logger.warning("k = " + str(k) + " is negative!")
+            logger.warning("k = " + str(k) + " is negative or length of log is 0!")
             k = tc[-1] / wl[-1]
             b = 0
             logger.warning("using k = " + str(k) + " b = 0 instead")
