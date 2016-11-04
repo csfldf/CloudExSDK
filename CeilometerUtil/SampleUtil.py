@@ -98,6 +98,6 @@ class SampleUtil(object):
             totalCalculation += tmp["cal"]
 
         if uiAvgCPUList:
-            return avgNumberList(uiAvgCPUList), totalCalculation
+            return avgNumberList(uiAvgCPUList), totalCalculation, allUiIds.__len__()
         else:
             return None

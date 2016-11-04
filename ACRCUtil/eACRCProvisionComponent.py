@@ -53,15 +53,17 @@ class EACRCProvisionComponent(ProvisionComponent):
 
         if k < 0:
             # actually k should be positive, here to eliminate corner case when there's not much log
-            new_k = tc[-1] / wl[-1]
-            logger.warning("k = " + str(k) + " is negative, using k = " + str(new_k) + " instead")
-            predictTC = new_k * predictWL
-        else:
-            predictTC = k * predictWL + b
+            logger.warning("k = " + str(k) + " is negative!")
+            k = tc[-1] / wl[-1]
+            b = 0
+            logger.warning("using k = " + str(k) + " b = 0 instead")
+
+        predictVMNumbers = int(math.ceil(k * predictWL / (TomcatInstanceUtil.getCalculationCapacityPerInstance() - b)))
+
+        predictTC = k * predictWL + predictVMNumbers * b
 
         WorkloadDBUtil.addPredictWorkloadAndPredictTotalCalculationToSpecificPeriod(periodNo, predictWL, predictTC)
 
-        predictVMNumbers = math.ceil(predictTC / TomcatInstanceUtil.getCalculationCapacityPerInstance())
 
         # 记录供给的虚拟机数目的分布
         provisionInfoDB = shelve.open(provisionInfoFile)
