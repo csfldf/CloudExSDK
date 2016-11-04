@@ -180,8 +180,8 @@ class WorkloadDBUtil(object):
             wl = []
             tc = []
             for i in tmp:
-                wl.append(i[0])
-                tc.append(i[1])
+                wl.append(float(i[0]))
+                tc.append(float(i[1]))
             return [wl, tc]
         else:
             return None
